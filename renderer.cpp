@@ -63,7 +63,7 @@ GLuint *createBuffers(int num) {
 }
 
 // Program constructor/destructor
-Renderer::Renderer(int numBuffers) : numBuffers(numBuffers), buffers(createBuffers(numBuffers)), elements(0) {};
+Renderer::Renderer(int numBuffers) : numBuffers(numBuffers), buffers(createBuffers(numBuffers)), elements(0) {}
 Renderer::~Renderer() {
     glDeleteBuffers(numBuffers, buffers);
 }
@@ -137,7 +137,77 @@ void setUniforms(GLuint uWinScale, GLuint uPerspective, GLuint uView, GLuint uMo
     glUniformMatrix4fv(uPerspective, 1, GL_FALSE, &Projection[0][0]);
 }
 
-GLuint texture = 0;
+// Renderer functions
+Renderer *Program3Dcreate() {
+    Renderer *prog = new Renderer(3);
+    prog->program = Program3D;
+    prog->mat = MATERIAL_METAL;
+    
+    return (Renderer *)prog;
+}
+
+void Program3DbufferData(Renderer *p, int type, long num, void *data) {
+    size_t scalar;
+    GLuint bufType;
+    
+    if(type == VERTEX_BUFFER) {
+        bufType = GL_ARRAY_BUFFER;
+        scalar = sizeof(float);
+        
+        glBindBuffer(bufType, p->getBuffer(0));
+    }
+    else if(type == NORMAL_BUFFER) {
+        bufType = GL_ARRAY_BUFFER;
+        scalar = sizeof(float);
+        
+        glBindBuffer(bufType, p->getBuffer(1));
+    }
+    else if(type == INDICES_BUFFER) {
+        bufType = GL_ELEMENT_ARRAY_BUFFER;
+        scalar = sizeof(unsigned int);
+        
+        glBindBuffer(bufType, p->getBuffer(2));
+    }
+    else {
+        std::cerr << "Buffer type " << type << " not recognized" << std::endl;
+        exit(1);
+    }
+    
+    glBufferData(bufType, scalar * num, data, GL_STATIC_DRAW);
+}
+
+void Program3Drender(Renderer *p, glm::mat4 Model) {
+    glUseProgram(Program3D->programID);
+    
+    // Send window scale
+    setUniforms(Program3D_uWinScale, Program3D_uProj, Program3D_uView, Program3D_uModel, Model);
+    glUniform3f(Program3D_uBend, p->bend.x, p->bend.y, p->bend.z);
+    
+    setMaterial(p->mat, Program3D_uDColor, Program3D_uSColor, Program3D_uAColor, Program3D_uShine);
+    
+    glUniform3f(Program3D_uLightPos, 100, 20, 33);
+    
+    // Bind attributes...
+    // XYZ Position
+    glEnableVertexAttribArray(Program3D_aPosition);
+    glBindBuffer(GL_ARRAY_BUFFER, p->getBuffer(0));
+    glVertexAttribPointer(Program3D_aPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    
+    // integer color
+    glEnableVertexAttribArray(Program3D_aNormal);
+    glBindBuffer(GL_ARRAY_BUFFER, p->getBuffer(1));
+    glVertexAttribPointer(Program3D_aNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, p->getBuffer(2));
+    glDrawElements(GL_TRIANGLES, p->getNumElements(), GL_UNSIGNED_INT, 0);
+    
+    if(p->getNumElements() == 0)
+        std::cout << "WARNING: Rendering a sprite with 0 elements" << std::endl;
+    // Cleanup
+    glDisableVertexAttribArray(Program3D_aPosition);
+    glDisableVertexAttribArray(Program3D_aNormal);
+}
+
 void shaders_init() {
     Projection = glm::perspective(45.0f, (float) w_width / w_height, 0.01f, 400.0f);
     currentMVP = glm::mat4(1.0f);
@@ -160,159 +230,9 @@ void shaders_init() {
     Program3D_aNormal = glGetAttribLocation(Program3D->programID, "aNormal");
     Program3D_aPosition = glGetAttribLocation(Program3D->programID, "aPosition");
     
-    Program3D->create = [] () {
-        Renderer *prog = new Renderer(3);
-        prog->program = Program3D;
-        prog->mat = MATERIAL_METAL;
-        
-        return (Renderer *)prog;
-    };
-    
-    Program3D->bufferData = [] (Renderer *p, int type, long num, void *data) {
-        size_t scalar;
-        GLuint bufType;
-        
-        if(type == VERTEX_BUFFER) {
-            bufType = GL_ARRAY_BUFFER;
-            scalar = sizeof(float);
-            
-            glBindBuffer(bufType, p->getBuffer(0));
-        }
-        else if(type == NORMAL_BUFFER) {
-            bufType = GL_ARRAY_BUFFER;
-            scalar = sizeof(float);
-            
-            glBindBuffer(bufType, p->getBuffer(1));
-        }
-        else if(type == INDICES_BUFFER) {
-            bufType = GL_ELEMENT_ARRAY_BUFFER;
-            scalar = sizeof(unsigned int);
-            
-            glBindBuffer(bufType, p->getBuffer(2));
-        }
-        
-        glBufferData(bufType, scalar * num, data, GL_STATIC_DRAW);
-    };
-    
-    Program3D->render = [] (Renderer *p, glm::mat4 Model) {
-        glUseProgram(Program3D->programID);
-        
-        // Send window scale
-        setUniforms(Program3D_uWinScale, Program3D_uProj, Program3D_uView, Program3D_uModel, Model);
-        glUniform3f(Program3D_uBend, p->bend.x, p->bend.y, p->bend.z);
-        
-        setMaterial(p->mat, Program3D_uDColor, Program3D_uSColor, Program3D_uAColor, Program3D_uShine);
-        
-        glUniform3f(Program3D_uLightPos, 100, 20, 33);
-        
-        // Bind attributes...
-        // XYZ Position
-        glEnableVertexAttribArray(Program3D_aPosition);
-        glBindBuffer(GL_ARRAY_BUFFER, p->getBuffer(0));
-        glVertexAttribPointer(Program3D_aPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        
-        // integer color
-        glEnableVertexAttribArray(Program3D_aNormal);
-        glBindBuffer(GL_ARRAY_BUFFER, p->getBuffer(1));
-        glVertexAttribPointer(Program3D_aNormal, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, p->getBuffer(2));
-        glDrawElements(GL_TRIANGLES, p->getNumElements(), GL_UNSIGNED_INT, 0);
-        
-        if(p->getNumElements() == 0)
-            std::cout << "WARNING: Rendering a sprite with 0 elements" << std::endl;
-        // Cleanup
-        glDisableVertexAttribArray(Program3D_aPosition);
-        glDisableVertexAttribArray(Program3D_aNormal);
-    };
-    
-    // ----------------- TEXTURED MODEL SHADER -------------------------
-    ProgramTex = (Program *) malloc(sizeof(Program));
-    
-    ProgramTex->programID = LoadShaders("./shaders/tex_vert.glsl", "", "./shaders/tex_frag.glsl");
-    ProgramTex_aNormal = glGetAttribLocation(ProgramTex->programID, "aNormal");
-    ProgramTex_aPosition = glGetAttribLocation(ProgramTex->programID, "aPosition");
-    ProgramTex_aTexCoord = glGetAttribLocation(ProgramTex->programID, "aTexCoord");
-    ProgramTex_uModel = glGetUniformLocation(ProgramTex->programID, "uModelMatrix");
-    ProgramTex_uProj = glGetUniformLocation(ProgramTex->programID, "uProjMatrix");
-    ProgramTex_uTexUnit = glGetUniformLocation(ProgramTex->programID, "uTexUnit");
-    ProgramTex_uView = glGetUniformLocation(ProgramTex->programID, "uViewMatrix");
-    ProgramTex_uWinScale = glGetUniformLocation(ProgramTex->programID, "uWinScale");
-    
-    glEnable(GL_TEXTURE_2D);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    
-    ProgramTex->create = [] () {
-        TexRenderer *prog = new TexRenderer();
-        prog->program = ProgramTex;
-        prog->texID = texture++;
-        
-        return (Renderer *)prog;
-    };
-    
-    ProgramTex->bufferData = [] (Renderer *p, int type, long num, void *data) {
-        size_t scalar;
-        GLuint bufType;
-        
-        if(type == VERTEX_BUFFER) {
-            bufType = GL_ARRAY_BUFFER;
-            scalar = sizeof(float);
-            
-            glBindBuffer(bufType, p->getBuffer(0));
-        }
-        else if(type == UV_BUFFER) {
-            bufType = GL_ARRAY_BUFFER;
-            scalar = sizeof(float);
-            
-            glBindBuffer(bufType, p->getBuffer(1));
-        }
-        else if(type == INDICES_BUFFER) {
-            bufType = GL_ELEMENT_ARRAY_BUFFER;
-            scalar = sizeof(unsigned int);
-            
-            glBindBuffer(bufType, p->getBuffer(2));
-        }
-        
-        glBufferData(bufType, scalar * num, data, GL_STATIC_DRAW);
-    };
-    
-    ProgramTex->render = [] (Renderer *p, glm::mat4 Model) {
-        glUseProgram(ProgramTex->programID);
-        
-        // Send window scale
-        setUniforms(ProgramTex_uWinScale, ProgramTex_uProj, ProgramTex_uView, ProgramTex_uModel, Model);
-        
-        glBindTexture(GL_TEXTURE_2D, ((TexRenderer *)p)->texID);
-        
-        // Bind attributes...
-        // XYZ Position
-        glEnableVertexAttribArray(ProgramTex_aPosition);
-        glBindBuffer(GL_ARRAY_BUFFER, p->getBuffer(0));
-        glVertexAttribPointer(ProgramTex_aPosition, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        
-        // integer color
-        glEnableVertexAttribArray(ProgramTex_aTexCoord);
-        glBindBuffer(GL_ARRAY_BUFFER, p->getBuffer(1));
-        glVertexAttribPointer(ProgramTex_aTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0);
-        
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, p->getBuffer(2));
-        glDrawElements(GL_TRIANGLES, p->getNumElements(), GL_UNSIGNED_INT, 0);
-        
-        if(p->getNumElements() == 0)
-            std::cout << "WARNING: Rendering a sprite with 0 elements" << std::endl;
-        // Cleanup
-        glDisableVertexAttribArray(ProgramTex_aPosition);
-        glDisableVertexAttribArray(ProgramTex_aTexCoord);
-    };
-}
-
-// Texture loading
-
-void TexRenderer::loadTexture(char *filename) {
-    LoadTexture(filename, texID);
+    Program3D->create = &Program3Dcreate;
+    Program3D->bufferData = &Program3DbufferData;
+    Program3D->render = &Program3Drender;
 }
 
 // ----------------- LOAD SHADERS -----------------------------

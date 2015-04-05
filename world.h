@@ -13,15 +13,11 @@
 #include "entity.h"
 #include "track.h"
 #include "coaster_car.h"
-#include "ground.h"
-#include "skybox.h"
 
 class World {
 private:
     CoasterCar *car, *tail;
     Track *track;
-    Ground *ground;
-    Skybox *sky;
     Renderer *renderer;
     
     int cameraSpot;

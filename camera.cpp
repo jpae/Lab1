@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Thomas Steinke. All rights reserved.
 //
 
-#include <noise/noise.h>
 #include <glm/ext.hpp>
 #include "main.h"
 #include "camera.h"
@@ -15,10 +14,6 @@ glm::vec3 position;
 glm::mat4 transform(1.0f);
 bool inCar = false;
 double pitch, yaw;
-
-#define SHAKE_SCALE 0.06f
-noise::module::Perlin shake;
-float t = 0;
 
 void camera_init() {
 }
@@ -32,16 +27,12 @@ void camera_setTransform(glm::mat4 _transform) {
     inCar = (transform != glm::mat4(1.0f));
 }
 
-void camera_update() { t += 0.01f; }
+void camera_update() { }
 
 glm::vec3 camera_getPosition() { return position; }
 glm::vec3 camera_getLookAt() {
     float y = yaw;
     float p = pitch;
-    if (inCar) {
-        y += shake.GetValue(0, t, 0) * SHAKE_SCALE;
-        p += shake.GetValue(t, 0, 0) * SHAKE_SCALE;
-    }
     
     return glm::vec3(cos(y) * cos(p), sin(p), -sin(y) * cos(p));
 }

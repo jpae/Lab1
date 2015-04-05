@@ -15,7 +15,7 @@
 #include "main.h"
 #include "coaster_car.h"
 
-World::World(const char *filename) : car(new CoasterCar()), track(new Track()), renderer(Program3D->create()), cameraSpot(0), ground(new Ground()), sky(new Skybox()) {
+World::World(const char *filename) : car(new CoasterCar()), track(new Track()), renderer(Program3D->create()), cameraSpot(0) {
     // Move camera
     camera_init();
     camera_setPosition(glm::vec3(0, 2, 0));
@@ -94,11 +94,9 @@ void World::switchCamera() {
 }
 
 void World::render() {
-    ground->render();
     car->render();
     
     track->render();
-    sky->render();
 }
 
 void World::update() {

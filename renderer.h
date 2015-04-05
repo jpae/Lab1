@@ -33,7 +33,6 @@ typedef struct Program {
 } Program;
 
 extern Program *Program3D;
-extern Program *ProgramTex;
 
 // Renderers
 
@@ -63,14 +62,6 @@ public:
     
     Material mat;
     glm::vec3 bend;
-};
-
-class TexRenderer : public Renderer {
-public:
-    TexRenderer() : Renderer(3) {};
-    unsigned int texID;
-    
-    void loadTexture(char *filename);
 };
 
 #endif

@@ -16,7 +16,7 @@ using namespace std;
 Entity::Entity() : Model(glm::mat4(1)) {
     renderers.clear();
     children.clear();
-};
+}
 
 void Entity::load(const char *filename) {
     string err = tinyobj::LoadObj(shapes, materials, filename);

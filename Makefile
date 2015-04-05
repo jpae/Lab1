@@ -1,8 +1,23 @@
-all:
+FILES=bend camera coaster_car entity GLSL main renderer tiny_obj_loader track world
+OBJECTS=${FILES:=.o}
+
+CC=g++
+CFLAGS=-ansi -pedantic -Wno-deprecated
+FRAMEWORKS=-framework Cocoa -framework IOKit -framework OpenGL
+LIBRARIES=-lglew -lglfw -lnoise
+INCLUDE=-Iinclude
+
+all: osx
+
+
+linux:
 	g++ -ansi -pedantic -Wno-deprecated *.cpp *.cc -DGL_GLEXT_PROTOTYPES -lglut -lGL -lGLU -o a4
 
-osx:
-	g++ -ansi -pedantic -Wno-deprecated *.cpp *.cc -framework Cocoa -framework IOKit -framework OpenGL -L. -lglew -lglfw -lnoise -Iinclude/ -std=c++11
+osx: ${OBJECTS}
+	g++ -pedantic -Wno-deprecated ${OBJECTS} ${FRAMEWORKS} -L. ${LIBRARIES}
+
+%.o: %.cpp
+	$(CC) -c $(CFLAGS) $^ -o $@ ${INCLUDE}
 
 clean:
 	rm -f *~ *.o a.out
