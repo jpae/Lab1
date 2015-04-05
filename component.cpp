@@ -1,34 +1,40 @@
 //
-//  entity.cpp
-//  FinalProject
+//  component.cpp
+//  Lab 1 - CPE 476
+//  Thomas Steinke & Jonathan Pae
 //
-//  Created by Thomas Steinke on 3/3/15.
-//  Copyright (c) 2015 Thomas Steinke. All rights reserved.
-//
-
+#include <vector>
 #include <iostream>
-#include <GL/glew.h>
-#include "entity.h"
+#include <string>
+
 #include "main.h"
+#include "component.h"
+#include "gameobject.h"
 
-using namespace std;
+void GraphicsComponent::render(GameObject *obj) {
+    glm::mat4 Model = obj->getModel();
 
-Entity::Entity() : Model(glm::mat4(1)) {
-    renderers.clear();
-    children.clear();
+    std::vector<Renderer *>::iterator renderer;
+    for (renderer = renderers.begin(); renderer != renderers.end(); renderer ++)
+        (*renderer)->render(Model);
 }
 
-void Entity::load(const char *filename) {
-    string err = tinyobj::LoadObj(shapes, materials, filename);
+ModelRenderer::ModelRenderer(const char *filename) {
+    GraphicsComponent::GraphicsComponent();
+
+    std::vector<tinyobj::shape_t> shapes;
+    std::vector<tinyobj::material_t> materials;
+    
+    std::string err = tinyobj::LoadObj(shapes, materials, filename);
     if(!err.empty()) {
-        cerr << err << endl;
+        std::cerr << err << std::endl;
     }
     resize_obj(shapes);
     
     for(int s = 0; s < shapes.size(); s ++) {
-        const vector<float> &posBuf = shapes[s].mesh.positions;
+        const std::vector<float> &posBuf = shapes[s].mesh.positions;
         
-        vector<float> norBuf;
+        std::vector<float> norBuf;
         int idx1, idx2, idx3;
         glm::vec3 v1, v2, v3;
         // For every vertex initialize a normal to 0
@@ -70,7 +76,7 @@ void Entity::load(const char *filename) {
         
         Renderer *renderer = Program3D->create();
         
-        const vector<unsigned int> &indBuf = shapes[s].mesh.indices;
+        const std::vector<unsigned int> &indBuf = shapes[s].mesh.indices;
         renderer->setNumElements(indBuf.size());
         renderer->bufferData(INDICES_BUFFER, indBuf.size(), (void *)&indBuf[0]);
         
@@ -79,48 +85,4 @@ void Entity::load(const char *filename) {
     
         renderers.push_back(renderer);
     }
-}
-
-Renderer *Entity::getRenderer(int num) {
-    return renderers[num];
-}
-
-void Entity::addChild(Entity *e) {
-    children.push_back(e);
-}
-
-void Entity::removeChild(Entity *e) {
-    std::vector<Entity *>::iterator iChild;
-    for (iChild = children.begin(); iChild < children.end(); iChild ++) {
-        if (*iChild == e) {
-            children.erase(iChild);
-            return;
-        }
-    }
-}
-
-void Entity::transformBefore(glm::mat4 mat) {
-    Model *= mat;
-}
-
-void Entity::transformAfter(glm::mat4 mat) {
-    Model = mat * Model;
-}
-
-void Entity::update() {
-    
-}
-
-void Entity::render() {
-    std::vector<Renderer *>::iterator renderer;
-    for (renderer = renderers.begin(); renderer != renderers.end(); renderer ++)
-        (*renderer)->render(Model);
-
-    Renderer::pushMatrix(Model);
-    
-    std::vector<Entity *>::iterator child;
-    for (child = children.begin(); child != children.end(); child ++)
-        (*child)->render();
-
-    Renderer::popMatrix();
 }

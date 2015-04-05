@@ -1,4 +1,4 @@
-FILES=bend camera entity GLSL main renderer tiny_obj_loader track world
+FILES=bend camera gameobject component GLSL main renderer tiny_obj_loader world
 OBJECTS=${FILES:=.o}
 
 CC=g++

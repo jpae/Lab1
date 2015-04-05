@@ -11,11 +11,11 @@
 
 #include <stdio.h>
 #include <vector>
-#include "entity.h"
+#include "gameobject.h"
 
 class World {
 private:
-    std::vector<Entity *> entities;
+    std::vector<GameObject *> objects;
     
 public:
     World();

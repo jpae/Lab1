@@ -20,27 +20,30 @@ World::World() {
     camera_setPosition(glm::vec3(0, 0, 3));
     camera_lookAt(glm::vec3(0, 0, 0));
 
-    entities.clear();
+    objects.clear();
 
-    Entity *bunny = new Entity();
-    bunny->load("models/bunny.obj");
+    GameObject *bunny = new GameObject(new ModelRenderer("models/bunny.obj"));
 
-    entities.push_back(bunny);
+    objects.push_back(bunny);
 
-    bunny = new Entity();
-    bunny->load("models/bunny.obj");
-    bunny->transformBefore(glm::translate(0.0f, 0.0f, 6.0f));
+    bunny = new GameObject(new ModelRenderer("models/bunny.obj"));
+    bunny->setZ(6);
 
-    entities.push_back(bunny);
+    objects.push_back(bunny);
 }
 
 void World::update() {
     camera_update();
+
+    std::vector<GameObject *>::iterator iterator;
+    for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
+        (*iterator)->update(this);
+    }
 }
 
 void World::render() {
-    std::vector<Entity *>::iterator iterator;
-    for(iterator = entities.begin(); iterator < entities.end(); iterator ++) {
+    std::vector<GameObject *>::iterator iterator;
+    for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
         (*iterator)->render();
     }
 }
