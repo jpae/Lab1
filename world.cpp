@@ -17,12 +17,30 @@
 World::World() {
     // Move camera
     camera_init();
-    camera_setPosition(glm::vec3(0, 2, 0));
+    camera_setPosition(glm::vec3(0, 0, 3));
     camera_lookAt(glm::vec3(0, 0, 0));
-}
 
-void World::render() {
+    entities.clear();
+
+    Entity *bunny = new Entity();
+    bunny->load("models/bunny.obj");
+
+    entities.push_back(bunny);
+
+    bunny = new Entity();
+    bunny->load("models/bunny.obj");
+    bunny->transformBefore(glm::translate(0.0f, 0.0f, 6.0f));
+
+    entities.push_back(bunny);
 }
 
 void World::update() {
+    camera_update();
+}
+
+void World::render() {
+    std::vector<Entity *>::iterator iterator;
+    for(iterator = entities.begin(); iterator < entities.end(); iterator ++) {
+        (*iterator)->render();
+    }
 }

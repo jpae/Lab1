@@ -15,12 +15,12 @@
 
 std::vector<tinyobj::shape_t> track_shapes;
 std::vector<tinyobj::material_t> track_materials;
-std::vector<float> posBuf, norBuf;
-std::vector<unsigned int> indBuf;
-bool initialized = false;
+std::vector<float> track_posBuf, track_norBuf;
+std::vector<unsigned int> track_indBuf;
+bool track_initialized = false;
 
 Track::Track() : nextTrack(NULL), ModelBend(glm::translate(0, 0, 1)), changed(true) {
-    if (!initialized) {
+    if (!track_initialized) {
         std::string err = tinyobj::LoadObj(track_shapes, track_materials, "models/track.obj");
         if(!err.empty()) {
             std::cerr << err << std::endl;
@@ -28,17 +28,17 @@ Track::Track() : nextTrack(NULL), ModelBend(glm::translate(0, 0, 1)), changed(tr
         resize_obj(track_shapes);
         
         for(int s = 0; s < track_shapes.size(); s ++) {
-            posBuf = track_shapes[s].mesh.positions;
-            indBuf = track_shapes[s].mesh.indices;
+            track_posBuf = track_shapes[s].mesh.positions;
+            track_indBuf = track_shapes[s].mesh.indices;
             
-            norBuf.clear();
+            track_norBuf.clear();
             int idx1, idx2, idx3;
             glm::vec3 v1, v2, v3;
             //for every vertex initialize a normal to 0
             for (int j = 0; j < track_shapes[s].mesh.positions.size()/3; j++) {
-                norBuf.push_back(0);
-                norBuf.push_back(0);
-                norBuf.push_back(0);
+                track_norBuf.push_back(0);
+                track_norBuf.push_back(0);
+                track_norBuf.push_back(0);
             }
             // DO work here to compute the normals for every face
             //then add its normal to its associated vertex
@@ -54,34 +54,34 @@ Track::Track() : nextTrack(NULL), ModelBend(glm::translate(0, 0, 1)), changed(tr
                 
                 u = v2 - v1;
                 v = v3 - v1;
-                norBuf[3*idx1+0] += u.y * v.z - u.z * v.y;
-                norBuf[3*idx1+1] += u.z * v.x - u.x * v.z;
-                norBuf[3*idx1+2] += u.x * v.y - u.y * v.x;
+                track_norBuf[3*idx1+0] += u.y * v.z - u.z * v.y;
+                track_norBuf[3*idx1+1] += u.z * v.x - u.x * v.z;
+                track_norBuf[3*idx1+2] += u.x * v.y - u.y * v.x;
                 
                 u = v3 - v2;
                 v = v1 - v2;
-                norBuf[3*idx2+0] += u.y * v.z - u.z * v.y;
-                norBuf[3*idx2+1] += u.z * v.x - u.x * v.z;
-                norBuf[3*idx2+2] += u.x * v.y - u.y * v.x;
+                track_norBuf[3*idx2+0] += u.y * v.z - u.z * v.y;
+                track_norBuf[3*idx2+1] += u.z * v.x - u.x * v.z;
+                track_norBuf[3*idx2+2] += u.x * v.y - u.y * v.x;
                 
                 u = v1 - v3;
                 v = v2 - v3;
-                norBuf[3*idx3+0] += u.y * v.z - u.z * v.y;
-                norBuf[3*idx3+1] += u.z * v.x - u.x * v.z;
-                norBuf[3*idx3+2] += u.x * v.y - u.y * v.x;
+                track_norBuf[3*idx3+0] += u.y * v.z - u.z * v.y;
+                track_norBuf[3*idx3+1] += u.z * v.x - u.x * v.z;
+                track_norBuf[3*idx3+2] += u.x * v.y - u.y * v.x;
             }
         }
         
-        initialized = true;
+        track_initialized = true;
     }
     
     Renderer *renderer = Program3D->create();
     
-    renderer->setNumElements(indBuf.size());
-    renderer->bufferData(INDICES_BUFFER, indBuf.size(), (void *)&indBuf[0]);
+    renderer->setNumElements(track_indBuf.size());
+    renderer->bufferData(INDICES_BUFFER, track_indBuf.size(), (void *)&track_indBuf[0]);
     
-    renderer->bufferData(VERTEX_BUFFER, posBuf.size(), (void *)&posBuf[0]);
-    renderer->bufferData(NORMAL_BUFFER, norBuf.size(), (void *)&norBuf[0]);
+    renderer->bufferData(VERTEX_BUFFER, track_posBuf.size(), (void *)&track_posBuf[0]);
+    renderer->bufferData(NORMAL_BUFFER, track_norBuf.size(), (void *)&track_norBuf[0]);
     
     renderers.push_back(renderer);
 }

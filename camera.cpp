@@ -40,9 +40,12 @@ glm::vec3 camera_getLookAt() {
 void camera_lookAt(glm::vec3 dest) {
     glm::vec3 dir = glm::normalize(dest - position);
     
-    pitch = asin(dir.y);
+    ;
+    camera_setPitch(asin(dir.y));
     yaw = acos(dir.x / cos(pitch));
-    if (dir.z < 0) yaw *= -1;
+    if (dir.z > 0) yaw *= -1;
+
+    // camera_setYaw(yaw);
 }
 
 void camera_setPitch(double _pitch) {

@@ -31,14 +31,14 @@ void Entity::load(const char *filename) {
         vector<float> norBuf;
         int idx1, idx2, idx3;
         glm::vec3 v1, v2, v3;
-        //for every vertex initialize a normal to 0
+        // For every vertex initialize a normal to 0
         for (int j = 0; j < shapes[s].mesh.positions.size()/3; j++) {
             norBuf.push_back(0);
             norBuf.push_back(0);
             norBuf.push_back(0);
         }
-        // DO work here to compute the normals for every face
-        //then add its normal to its associated vertex
+        // Compute the normals for every face
+        // then add its normal to its associated vertex
         for (int i = 0; i < shapes[s].mesh.indices.size()/3; i++) {
             idx1 = shapes[s].mesh.indices[3*i+0];
             idx2 = shapes[s].mesh.indices[3*i+1];
@@ -115,7 +115,7 @@ void Entity::render() {
     std::vector<Renderer *>::iterator renderer;
     for (renderer = renderers.begin(); renderer != renderers.end(); renderer ++)
         (*renderer)->render(Model);
-    
+
     Renderer::pushMatrix(Model);
     
     std::vector<Entity *>::iterator child;

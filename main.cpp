@@ -97,8 +97,10 @@ int main(int argc, char **argv) {
             double dy = (double) w_height / 2 - ypos;
             // Edge case: window initialization
             if (xpos != 0 || ypos != 0) {
-                camera_movePitch(dy * CAMERA_SPEED);
+                // camera_movePitch(dy * CAMERA_SPEED);
                 camera_moveYaw(dx * CAMERA_SPEED);
+                camera_movePitch(0);//dy * CAMERA_SPEED);
+                camera_moveYaw(0);//dx * CAMERA_SPEED);
             }
             glfwSetCursorPos(window, w_width / 2, w_height / 2);
             

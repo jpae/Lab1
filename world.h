@@ -10,10 +10,12 @@
 #define __FinalProject__world__
 
 #include <stdio.h>
+#include <vector>
 #include "entity.h"
 
 class World {
 private:
+    std::vector<Entity *> entities;
     
 public:
     World();

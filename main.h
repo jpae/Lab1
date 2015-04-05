@@ -18,7 +18,7 @@
 #define DEG_TO_RADIANS float(MATH_PI / 180.0f)
 
 #define CAMERA_SPEED 0.005
-#define CAMERA_MOVE 0.25
+#define CAMERA_MOVE 0.1
 
 #define FRAMES_PER_SEC 60
 #define SEC_PER_FRAME 1 / FRAMES_PER_SEC
