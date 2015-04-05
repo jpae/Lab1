@@ -1,4 +1,4 @@
-FILES=bend camera coaster_car entity GLSL main renderer tiny_obj_loader track world
+FILES=bend camera entity GLSL main renderer tiny_obj_loader track world
 OBJECTS=${FILES:=.o}
 
 CC=g++

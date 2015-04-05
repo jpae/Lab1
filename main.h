@@ -17,8 +17,11 @@
 #define RADIANS_TO_DEG float(180.0f / MATH_PI)
 #define DEG_TO_RADIANS float(MATH_PI / 180.0f)
 
-#define NUM_CARS 3
-#define TRACK "tracks/track1.trk"
+#define CAMERA_SPEED 0.005
+#define CAMERA_MOVE 0.25
+
+#define FRAMES_PER_SEC 60
+#define SEC_PER_FRAME 1 / FRAMES_PER_SEC
 
 const extern int w_width;
 const extern int w_height;

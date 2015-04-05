@@ -11,24 +11,12 @@
 
 #include <stdio.h>
 #include "entity.h"
-#include "track.h"
-#include "coaster_car.h"
 
 class World {
 private:
-    CoasterCar *car, *tail;
-    Track *track;
-    Renderer *renderer;
-    
-    int cameraSpot;
-    glm::vec3 camPos, camLook;
     
 public:
-    World(const char *filename);
-    
-    Track *getTrack() { return track; }
-    
-    void switchCamera();
+    World();
     
     void update();
     void render();

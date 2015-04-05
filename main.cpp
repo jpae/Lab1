@@ -24,32 +24,21 @@
 #include "tiny_obj_loader.h"
 using namespace std;
 
-#define FRAMES_PER_SEC 60
-#define SEC_PER_FRAME 1 / FRAMES_PER_SEC
-
 World *world = NULL;
 GLFWwindow* window;
 
 const int w_width = 1024;
 const int w_height = 768;
-const char *w_title = "Roller Coaster Funtime";
+const char *w_title = "Lab 1";
 
 bool keysDown[GLFW_KEY_LAST] = {0};
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int modes) {
-    if (action == GLFW_PRESS) {
+    if (action == GLFW_PRESS)
         keysDown[key] = 1;
-    
-        if (key == GLFW_KEY_SPACE && world != NULL)
-            world->switchCamera();
-    }
-    if (action == GLFW_RELEASE)
+    else if (action == GLFW_RELEASE)
         keysDown[key] = 0;
 }
 
-int track_num = 1;
-
-#define CAMERA_SPEED 0.005
-#define CAMERA_MOVE 0.25
 int main(int argc, char **argv) {
     // Initialise GLFW
     if(!glfwInit()) {
@@ -92,21 +81,10 @@ int main(int argc, char **argv) {
     
     shaders_init();
     
-    world = new World(TRACK);
+    world = new World();
     
     double clock = glfwGetTime();
-    do{
-        if (keysDown[GLFW_KEY_P]) {
-            track_num = (track_num + 1) % 3;
-            world->~World();
-            if (track_num == 0)
-                world = new World("tracks/track1.trk");
-            if (track_num == 1)
-                world = new World("tracks/track2.trk");
-            if (track_num == 2)
-                world = new World("tracks/track3.trk");
-        }
-        
+    do { 
         // Clear the screen
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
