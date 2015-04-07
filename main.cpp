@@ -93,14 +93,13 @@ int main(int argc, char **argv) {
             // Update camera
             double xpos, ypos;
             glfwGetCursorPos(window, &xpos, &ypos);
+                // std::cout << xpos << std::endl;
             double dx = (double) w_width / 2 - xpos;
             double dy = (double) w_height / 2 - ypos;
             // Edge case: window initialization
-            if (xpos != 0 || ypos != 0) {
-                // camera_movePitch(dy * CAMERA_SPEED);
+            if (abs(dx) < 100 && abs(dy) < 100 && (xpos > 0 || ypos > 0)) {
+                camera_movePitch(dy * CAMERA_SPEED);
                 camera_moveYaw(dx * CAMERA_SPEED);
-                camera_movePitch(0);//dy * CAMERA_SPEED);
-                camera_moveYaw(0);//dx * CAMERA_SPEED);
             }
             glfwSetCursorPos(window, w_width / 2, w_height / 2);
             
