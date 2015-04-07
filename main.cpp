@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
             glm::vec3 cam_d(0, 0, 0);
             if (keysDown[GLFW_KEY_D])
                 cam_d.x += CAMERA_MOVE;
-            if (keysDown[GLFW_KEY_A])
+           if (keysDown[GLFW_KEY_A])
                 cam_d.x -= CAMERA_MOVE;
             if (keysDown[GLFW_KEY_W])
                 cam_d.z += CAMERA_MOVE;

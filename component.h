@@ -34,6 +34,15 @@ public:
 
 class Component {
 public:
+    Component(){};
+    ~Component(){};
+    virtual void update(GameObject *obj){};
+};
+
+class PlayerInputComponent : public Component {
+public:
+    PlayerInputComponent(){};
+    ~PlayerInputComponent(){};
     virtual void update(GameObject *obj);
 };
 

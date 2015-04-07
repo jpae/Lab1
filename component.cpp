@@ -6,13 +6,29 @@
 #include <vector>
 #include <iostream>
 #include <string>
-
+#include "GLSL.h"
 #include "main.h"
 #include "component.h"
 #include "gameobject.h"
 
+void PlayerInputComponent::update(GameObject *obj) {
+    if (keysDown[GLFW_KEY_J]) {
+        obj->setX(obj->getX() - 0.5); 
+    }
+    if (keysDown[GLFW_KEY_K]) {
+        obj->setZ(obj->getZ() + 0.5);
+    }
+    if (keysDown[GLFW_KEY_L]) {
+        obj->setX(obj->getX() + 0.5); 
+    }
+    if (keysDown[GLFW_KEY_I]) {
+        obj->setZ(obj->getZ() - 0.5);
+    }
+}
+
 void GraphicsComponent::render(GameObject *obj) {
     glm::mat4 Model = obj->getModel();
+
 
     std::vector<Renderer *>::iterator renderer;
     for (renderer = renderers.begin(); renderer != renderers.end(); renderer ++)
@@ -86,3 +102,5 @@ ModelRenderer::ModelRenderer(const char *filename) {
         renderers.push_back(renderer);
     }
 }
+
+

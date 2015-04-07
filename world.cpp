@@ -22,7 +22,7 @@ World::World() {
 
     objects.clear();
 
-    GameObject *bunny = new GameObject(new ModelRenderer("models/bunny.obj"));
+    GameObject *bunny = new GameObject(new ModelRenderer("models/bunny.obj"), NULL, new PlayerInputComponent());
 
     objects.push_back(bunny);
 
