@@ -29,21 +29,17 @@ public:
 
 class PhysicsComponent {
 public:
-    virtual void update(GameObject *obj, World *world);
+    virtual void update(GameObject *obj, World *world, float dt);
 };
 
 class Component {
 public:
-    Component(){};
-    ~Component(){};
     virtual void update(GameObject *obj){};
 };
 
 class PlayerInputComponent : public Component {
 public:
-    PlayerInputComponent(){};
-    ~PlayerInputComponent(){};
-    virtual void update(GameObject *obj);
+    void update(GameObject *obj);
 };
 
 #endif /* __Project__component__ */

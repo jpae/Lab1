@@ -39,7 +39,7 @@ public:
    void setY(float _y) { y = _y; }
    void setZ(float _z) { z = _z; }
 
-   void update(World *world);
+   void update(World *world, float dt);
    void render();
 };
 

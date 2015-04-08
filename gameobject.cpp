@@ -26,12 +26,12 @@ glm::mat4 GameObject::getModel() {
    return glm::translate(x, y, z);
 }
 
-void GameObject::update(World *world) {
+void GameObject::update(World *world, float dt) {
    if (input)
       input->update(this);
 
    if (physics)
-      physics->update(this, world);
+      physics->update(this, world, dt);
 }
 
 void GameObject::render() {

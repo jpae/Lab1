@@ -120,7 +120,8 @@ int main(int argc, char **argv) {
             camera_move(cam_d.x, cam_d.y, cam_d.z);
             
             // Update and render the game
-            world->update();
+            // Use fixed time updating
+            world->update(SEC_PER_FRAME);
             
             clock = nextTime;
         }

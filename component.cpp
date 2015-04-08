@@ -11,18 +11,19 @@
 #include "component.h"
 #include "gameobject.h"
 
+const float PLAYER_SPEED = 0.25f;
 void PlayerInputComponent::update(GameObject *obj) {
     if (keysDown[GLFW_KEY_J]) {
-        obj->setX(obj->getX() - 0.5); 
+        obj->setX(obj->getX() - PLAYER_SPEED); 
     }
     if (keysDown[GLFW_KEY_K]) {
-        obj->setZ(obj->getZ() + 0.5);
+        obj->setZ(obj->getZ() + PLAYER_SPEED);
     }
     if (keysDown[GLFW_KEY_L]) {
-        obj->setX(obj->getX() + 0.5); 
+        obj->setX(obj->getX() + PLAYER_SPEED); 
     }
     if (keysDown[GLFW_KEY_I]) {
-        obj->setZ(obj->getZ() - 0.5);
+        obj->setZ(obj->getZ() - PLAYER_SPEED);
     }
 }
 

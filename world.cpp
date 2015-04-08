@@ -32,12 +32,12 @@ World::World() {
     objects.push_back(bunny);
 }
 
-void World::update() {
+void World::update(float dt) {
     camera_update();
 
     std::vector<GameObject *>::iterator iterator;
     for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
-        (*iterator)->update(this);
+        (*iterator)->update(this, dt);
     }
 }
 

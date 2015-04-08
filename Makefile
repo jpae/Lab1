@@ -16,8 +16,8 @@ linux:
 osx: ${OBJECTS}
 	g++ -pedantic -Wno-deprecated ${OBJECTS} ${FRAMEWORKS} -L. ${LIBRARIES}
 
-%.o: %.cpp
-	$(CC) -c $(CFLAGS) $^ -o $@ ${INCLUDE}
+%.o: %.cpp %.h
+	$(CC) -c $(CFLAGS) $< -o $@ ${INCLUDE}
 
 clean:
 	rm -f *~ *.o a.out

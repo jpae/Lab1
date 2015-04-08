@@ -20,7 +20,7 @@ private:
 public:
     World();
     
-    void update();
+    void update(float dt);
     void render();
 };
 
