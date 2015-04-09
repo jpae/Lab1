@@ -27,13 +27,66 @@ void PlayerInputComponent::update(GameObject *obj) {
     }
 }
 
+/* Collision components */
+void PlayerCollisionComponent::collide(GameObject *obj, GameObject *other) {
+    std::cout << "ow!" << std::endl;
+}
+
+/* Graphics Renderers */
+GraphicsComponent::GraphicsComponent() {
+    renderers.clear();
+    bounds.min_x = bounds.max_x = 0;
+    bounds.min_y = bounds.max_y = 0;
+    bounds.min_z = bounds.max_z = 0;
+}
+
+void GraphicsComponent::setBounds(GameObject *obj)  { 
+    memcpy(&obj->bounds, &bounds, sizeof(Bounds));
+}
+
 void GraphicsComponent::render(GameObject *obj) {
     glm::mat4 Model = obj->getModel();
-
 
     std::vector<Renderer *>::iterator renderer;
     for (renderer = renderers.begin(); renderer != renderers.end(); renderer ++)
         (*renderer)->render(Model);
+}
+
+GroundRenderer::GroundRenderer(float size) {
+    GraphicsComponent::GraphicsComponent();
+
+    bounds.min_x = bounds.min_z = -size;
+    bounds.max_x = bounds.max_z =  size;
+    bounds.min_y = -1;
+    bounds.max_y = 0;
+
+    const float posBuf[] = {
+        -size, 0,  size,
+         size, 0,  size,
+        -size, 0, -size,
+         size, 0,  size
+    };
+
+    const unsigned int indBuf[] = {
+        0, 1, 2, 1, 2, 3
+    };
+
+    const float norBuf[] = {
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0,
+        0, 1, 0
+    };
+        
+    Renderer *renderer = Program3D->create();
+    
+    renderer->setNumElements(6);
+    renderer->bufferData(INDICES_BUFFER, 6, (void *)&indBuf[0]);
+    
+    renderer->bufferData(VERTEX_BUFFER, 4 * 3, (void *)&posBuf[0]);
+    renderer->bufferData(NORMAL_BUFFER, 4 * 3, (void *)&norBuf[0]);
+
+    renderers.push_back(renderer);
 }
 
 ModelRenderer::ModelRenderer(const char *filename) {
@@ -101,6 +154,20 @@ ModelRenderer::ModelRenderer(const char *filename) {
         renderer->bufferData(NORMAL_BUFFER, norBuf.size(), (void *)&norBuf[0]);
     
         renderers.push_back(renderer);
+    }
+
+    // Compute bounds
+    for (size_t i = 0; i < shapes.size(); i++) {
+        for (size_t v = 0; v < shapes[i].mesh.positions.size() / 3; v++) {
+            if(shapes[i].mesh.positions[3*v+0] < bounds.min_x) bounds.min_x = shapes[i].mesh.positions[3*v+0];
+            if(shapes[i].mesh.positions[3*v+0] > bounds.max_x) bounds.max_x = shapes[i].mesh.positions[3*v+0];
+            
+            if(shapes[i].mesh.positions[3*v+1] < bounds.min_y) bounds.min_y = shapes[i].mesh.positions[3*v+1];
+            if(shapes[i].mesh.positions[3*v+1] > bounds.max_y) bounds.max_y = shapes[i].mesh.positions[3*v+1];
+            
+            if(shapes[i].mesh.positions[3*v+2] < bounds.min_z) bounds.min_z = shapes[i].mesh.positions[3*v+2];
+            if(shapes[i].mesh.positions[3*v+2] > bounds.max_z) bounds.max_z = shapes[i].mesh.positions[3*v+2];
+        }
     }
 }
 

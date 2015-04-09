@@ -20,6 +20,7 @@ private:
 public:
     World();
     
+    void collide(GameObject *obj);
     void update(float dt);
     void render();
 };

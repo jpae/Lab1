@@ -22,14 +22,27 @@ World::World() {
 
     objects.clear();
 
-    GameObject *bunny = new GameObject(new ModelRenderer("models/bunny.obj"), NULL, new PlayerInputComponent());
-
+    // Bunny 1
+    GameObject *bunny = new GameObject(new ModelRenderer("models/bunny.obj"), 
+        NULL, new PlayerInputComponent(), new PlayerCollisionComponent());
     objects.push_back(bunny);
 
-    bunny = new GameObject(new ModelRenderer("models/bunny.obj"));
+    // Bunny 2
+    bunny = new GameObject(new ModelRenderer("models/bunny.obj"), NULL, NULL,
+        new CollisionComponent());
     bunny->setZ(6);
-
     objects.push_back(bunny);
+
+    GameObject *ground = new GameObject(new GroundRenderer(10));
+    objects.push_back(ground);
+}
+
+void World::collide(GameObject *obj) {
+    std::vector<GameObject *>::iterator iterator;
+    for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
+        if (*iterator != obj)
+            (*iterator)->collide(obj);
+    }
 }
 
 void World::update(float dt) {
@@ -46,4 +59,15 @@ void World::render() {
     for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
         (*iterator)->render();
     }
+
+    #ifdef DEBUG
+    glm::mat4 View = camera_getMatrix();
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadMatrixf(&View[0][0]);
+
+    for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
+        (*iterator)->_debug_render();
+    }
+    #endif
 }

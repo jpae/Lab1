@@ -24,6 +24,8 @@
 #define FRAMES_PER_SEC 60
 #define SEC_PER_FRAME 1 / FRAMES_PER_SEC
 
+#define DEBUG 1
+
 const extern int w_width;
 const extern int w_height;
 extern bool keysDown[GLFW_KEY_LAST];

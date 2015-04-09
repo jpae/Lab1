@@ -1,7 +1,7 @@
-FILES=bend camera gameobject component GLSL main renderer tiny_obj_loader world
+FILES=bounds camera gameobject component GLSL main renderer tiny_obj_loader world
 OBJECTS=${FILES:=.o}
 
-CC=g++
+CC=g++ -std=c++11
 CFLAGS=-ansi -pedantic -Wno-deprecated
 FRAMEWORKS=-framework Cocoa -framework IOKit -framework OpenGL
 LIBRARIES=-lglew -lglfw -lnoise

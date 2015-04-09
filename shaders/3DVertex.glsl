@@ -16,7 +16,6 @@ uniform int uShowNormal;
 uniform vec3 uBend;
 
 varying vec3 vNormal;
-varying vec3 vColor;
 varying vec4 vWorldSpace;
 
 #define M_PI 3.1415926535897932384626433832795

@@ -79,15 +79,13 @@ int main(int argc, char **argv) {
     
     glClearColor(0.30f, 0.5f, 0.78f, 1.0f);
     
+    glLoadIdentity();
     shaders_init();
     
     world = new World();
     
     double clock = glfwGetTime();
     do { 
-        // Clear the screen
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
         double nextTime = glfwGetTime();
         if (nextTime - clock > SEC_PER_FRAME) {
             // Update camera
@@ -125,7 +123,22 @@ int main(int argc, char **argv) {
             
             clock = nextTime;
         }
+
+        // Clear the screen
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         world->render();
+        glUseProgram(0);
+
+        glLoadIdentity(); // Reset current matrix (Modelview)
+        // glBegin(GL_LINES);
+        //     glColor3f(1, 0, 0);
+        //     glVertex3f( 0.0f,  1.0f, -5.0f);             // Top
+        //     glVertex3f( 1.0f, -1.0f, -5.0f);             // Bottom Left
+        //     glVertex3f( 0.0f,  1.0f, -5.0f);             // Top
+        //     glVertex3f(-1.0f, -1.0f, -5.0f);             // Bottom Right
+        //     glVertex3f( 1.0f, -1.0f, -5.0f);             // Bottom Left
+        //     glVertex3f(-1.0f, -1.0f, -5.0f);             // Bottom Right
+        // glEnd();
         assert(glGetError() == GL_NO_ERROR);
         
         // Swap buffers
@@ -168,7 +181,7 @@ std::ostream &operator<< (std::ostream &out, const glm::mat4 &mat) {
     return out;
 }
 
-//Given a vector of shapes which has already been read from an obj file
+// Given a vector of shapes which has already been read from an obj file
 // resize all vertices to the range [-1, 1]
 void resize_obj(std::vector<tinyobj::shape_t> &shapes){
     float minX, minY, minZ;

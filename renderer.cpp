@@ -10,6 +10,7 @@
 using namespace std;
 
 #include "camera.h"
+#include "bounds.h"
 #include "renderer.h"
 #include "main.h"
 
@@ -206,13 +207,21 @@ void Program3Drender(Renderer *p, glm::mat4 Model) {
     // Cleanup
     glDisableVertexAttribArray(Program3D_aPosition);
     glDisableVertexAttribArray(Program3D_aNormal);
+
+    glUseProgram(0);
 }
 
 void shaders_init() {
     Projection = glm::perspective(45.0f, (float) w_width / w_height, 0.01f, 400.0f);
     currentMVP = glm::mat4(1.0f);
     MatrixStack.empty();
-    
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixf(&Projection[0][0]);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+        
     // ----------------- 3D MODEL SHADER -------------------------
     Program3D = (Program *) malloc(sizeof(Program));
     
