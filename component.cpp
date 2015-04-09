@@ -12,6 +12,17 @@
 #include "gameobject.h"
 
 const float PLAYER_SPEED = 0.25f;
+void MovementComponent::update(GameObject *obj, World *world, float dt) {
+    float world_speed = obj->getSpeed() / FRAMES_PER_SEC;
+    //glm::vec3 direction = obj->getDirection();
+
+    float velocity_z = world_speed * glm::cos(1); //retrieve from direction
+    float velocity_x = world_speed * glm::sin(1); //retrieve from direction
+
+    
+    obj->setZ(obj->getZ() + world_speed);
+}
+
 void PlayerInputComponent::update(GameObject *obj) {
     if (keysDown[GLFW_KEY_J]) {
         obj->setX(obj->getX() - PLAYER_SPEED); 

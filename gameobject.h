@@ -15,8 +15,11 @@
 class GameObject {
 private:
    float x, y, z;
+   float speed;
+   glm::vec3 direction;
 
    std::vector<GameObject *> children;
+   
 
    GraphicsComponent  *graphics;
    PhysicsComponent   *physics;
@@ -43,10 +46,14 @@ public:
    float getY() { return y; }
    float getZ() { return z; }
    float getRadius();
+   float getSpeed() { return speed; }
+   glm::vec3 getDirection() { return direction; } 
 
    void setX(float _x) { x = _x; }
    void setY(float _y) { y = _y; }
    void setZ(float _z) { z = _z; }
+   void setSpeed(float _s) { speed = _s; }
+   void setDirection(glm::vec3 _d) { direction = glm::normalize(_d); }
 
    void collide(GameObject *other);
    void update(World *world, float dt);

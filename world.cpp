@@ -24,7 +24,9 @@ World::World() {
 
     // Bunny 1
     GameObject *bunny = new GameObject(new ModelRenderer("models/bunny.obj"), 
-        NULL, new PlayerInputComponent(), new PlayerCollisionComponent());
+        new MovementComponent(), new PlayerInputComponent(), new PlayerCollisionComponent());
+    bunny->setSpeed(3.0);
+
     objects.push_back(bunny);
 
     // Bunny 2
