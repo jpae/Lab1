@@ -73,12 +73,12 @@ void GameObject::collide(GameObject *other) {
    // Within each other's sphere
    if (max_dist * max_dist >= dx * dx + dy * dy + dz * dz) {
       // Check bounding boxes
-      if (bounds.max_x >= other->bounds.min_x &&
-          bounds.min_x <= other->bounds.max_x &&
-          bounds.max_y >= other->bounds.min_y &&
-          bounds.min_y <= other->bounds.max_y &&
-          bounds.max_z >= other->bounds.min_z &&
-          bounds.min_z <= other->bounds.max_z) {
+      if (x + bounds.max_x >= other->x + other->bounds.min_x &&
+          x + bounds.min_x <= other->x + other->bounds.max_x &&
+          y + bounds.max_y >= other->y + other->bounds.min_y &&
+          y + bounds.min_y <= other->y + other->bounds.max_y &&
+          z + bounds.max_z >= other->z + other->bounds.min_z &&
+          z + bounds.min_z <= other->z + other->bounds.max_z) {
 
          // Collided
          collision->collide(this, other);
