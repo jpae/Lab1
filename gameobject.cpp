@@ -12,26 +12,29 @@
 
 /* Constructors (ew) */
 GameObject::GameObject(GraphicsComponent *g) 
-   : x(0), y(0), z(0), speed(0), graphics(g), physics(NULL), input(NULL), collision(NULL) {
+   : x(0), y(0), z(0), speed(0), graphics(g), physics(NULL), input(NULL), 
+   collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0) {
    children.clear();
 
    g->setBounds(this);
 }
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p)
-   : x(0), y(0), z(0), speed(0), graphics(g), physics(p), input(NULL), collision(NULL) {
+   : x(0), y(0), z(0), speed(0), graphics(g), physics(p), input(NULL), 
+   collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0) {
    children.clear();
 
    g->setBounds(this);
 }
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p, Component *i) 
-   : x(0), y(0), z(0), speed(0), graphics(g), physics(p), input(i), collision(NULL) {
+   : x(0), y(0), z(0), speed(0), graphics(g), physics(p), input(i), 
+   collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0) {
    children.clear();
 
    g->setBounds(this);
 }
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p, Component *i,
-   CollisionComponent *c) : x(0), y(0), z(0), speed(0), graphics(g), physics(p), input(i), 
-   collision(c) {
+   CollisionComponent *c) : x(0), y(0), z(0), speed(0), graphics(g), physics(p), 
+   input(i), type(OBJECT_OBSTACLE), collidesWith(0), collision(c) {
    children.clear();
 
    g->setBounds(this);
@@ -104,13 +107,15 @@ void GameObject::render() {
 }
 
 void GameObject::_debug_render() {
-   glPushMatrix();
+   if (collision) {
+      glPushMatrix();
 
-   glm::mat4 Model = getModel();
-   glMultMatrixf(&Model[0][0]);
+      glm::mat4 Model = getModel();
+      glMultMatrixf(&Model[0][0]);
 
-   _debug_drawBounds(this->bounds);
-   _debug_drawSphere(this->getRadius());
+      _debug_drawBounds(this->bounds);
+      _debug_drawSphere(this->getRadius());
 
-   glPopMatrix();
+      glPopMatrix();
+   }
 }

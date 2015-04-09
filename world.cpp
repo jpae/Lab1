@@ -14,6 +14,8 @@
 #include "camera.h"
 #include "main.h"
 
+const float time_per_spawn = 1.0f;
+float t = 0;
 World::World() {
     // Move camera
     camera_init();
@@ -26,12 +28,14 @@ World::World() {
     GameObject *bunny = new GameObject(new ModelRenderer("models/bunny.obj"), 
         new MovementComponent(), new PlayerInputComponent(), new PlayerCollisionComponent());
     // bunny->setSpeed(3.0);
+    bunny->type = OBJECT_PLAYER;
 
     objects.push_back(bunny);
 
     // Bunny 2
     bunny = new GameObject(new ModelRenderer("models/bunny.obj"), NULL, NULL,
         new CollisionComponent());
+    bunny->type = OBJECT_TARGET;
     bunny->setZ(6);
     objects.push_back(bunny);
 
@@ -42,13 +46,24 @@ World::World() {
 void World::collide(GameObject *obj) {
     std::vector<GameObject *>::iterator iterator;
     for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
-        if (*iterator != obj)
+        if (*iterator != obj && (*iterator)->collidesWith & obj->type)
             (*iterator)->collide(obj);
     }
 }
 
 void World::update(float dt) {
     camera_update();
+
+    t += dt;
+    if (t >= time_per_spawn) {
+        // Create a new object
+        GameObject *newObject = new GameObject(new ModelRenderer("models/bunny.obj"), NULL, NULL,
+            new CollisionComponent());
+        newObject->type = OBJECT_TARGET;
+        std::cout << "New obj!" << std::endl;
+
+        t -= time_per_spawn;
+    }
 
     std::vector<GameObject *>::iterator iterator;
     for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {

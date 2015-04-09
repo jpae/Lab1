@@ -12,6 +12,10 @@
 
 #include "component.h"
 
+#define OBJECT_PLAYER 0
+#define OBJECT_TARGET 1
+#define OBJECT_OBSTACLE 2
+
 class GameObject {
 private:
    float x, y, z;
@@ -28,6 +32,8 @@ private:
 
 public:
    Bounds bounds;
+   unsigned int type;
+   unsigned int collidesWith;
 
    GameObject(GraphicsComponent  *graphics, 
               PhysicsComponent   *physics,
