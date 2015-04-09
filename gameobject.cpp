@@ -12,25 +12,25 @@
 
 /* Constructors (ew) */
 GameObject::GameObject(GraphicsComponent *g) 
-   : x(0), y(0), z(0), graphics(g), physics(NULL), input(NULL), collision(NULL) {
+   : x(0), y(0), z(0), speed(0), graphics(g), physics(NULL), input(NULL), collision(NULL) {
    children.clear();
 
    g->setBounds(this);
 }
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p)
-   : x(0), y(0), z(0), graphics(g), physics(p), input(NULL), collision(NULL) {
+   : x(0), y(0), z(0), speed(0), graphics(g), physics(p), input(NULL), collision(NULL) {
    children.clear();
 
    g->setBounds(this);
 }
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p, Component *i) 
-   : x(0), y(0), z(0), graphics(g), physics(p), input(i), collision(NULL) {
+   : x(0), y(0), z(0), speed(0), graphics(g), physics(p), input(i), collision(NULL) {
    children.clear();
 
    g->setBounds(this);
 }
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p, Component *i,
-   CollisionComponent *c) : x(0), y(0), z(0), graphics(g), physics(p), input(i), 
+   CollisionComponent *c) : x(0), y(0), z(0), speed(0), graphics(g), physics(p), input(i), 
    collision(c) {
    children.clear();
 
