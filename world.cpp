@@ -70,7 +70,7 @@ void World::update(float dt) {
         newObject->type = OBJECT_TARGET;
         newObject->setY(1);
         newObject->setSpeed(5.0f);
-        newObject->setDirection(glm::vec3(rand(), 0, rand()));
+        newObject->setDirection(glm::vec3(randFloat(-1.0, 1.0), 0, randFloat(-1.0, 1.0)));
 
         addObject(newObject);
 

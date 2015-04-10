@@ -39,6 +39,12 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         keysDown[key] = 0;
 }
 
+float randFloat(float l, float h)
+{
+   float r = rand() / (float)RAND_MAX;
+      return (1.0f - r) * l + r * h;
+}
+
 int main(int argc, char **argv) {
     // Initialise GLFW
     if(!glfwInit()) {
