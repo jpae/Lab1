@@ -104,30 +104,50 @@ glm::vec3 camera_getPosition();
 glm::vec3 camera_getLookAt();
 ```
 
-## Entity
+## GameObject
 
-I set this up to use the Entity-Component system. Here's the interface:
+Game Objects are mostly just a collection of components. There's a small interface for working with them though:
 
-Initialization:
 ```
-void entity->load();
-void entity->addChild(Entity *e);
-void entity->removeChild(Entity *e);
+float gameObject->getX(), gameObject->getY(), gameObject->getZ();
+float gameObject->getRadius(); // Get the radius of the bounding sphere
+float gameObject->getSpeed();
+glm::vec3 gameObject->getDirection();
 
-void entity->transformBefore(glm::mat4 mat); // The same as doing Model = Model * mat
-void entity->transformAfter (glm::mat4 mat); // The same as doing Model = mat * Model
+void gameObject->setX(float x), gameObject->setY(float y), gameObject->setZ(float z);
+void gameObject->setSpeed(float speed);
+void gameObject->setDirection(glm::vec3 direction);
+
+void gameObject->collide(GameObject *other); // Test (and possibly react to) collision between gameObject and other
+void gameObject->update(World *world, float dt); // Update the object
+void gameObject->render();
 ```
 
-Called (more or less) every frame:
-```
-void entity->update(); // Empty by default, make a subclass
-void entity->render();
-```
+## Components
 
-In case you want it:
-```
-void entity->getModel();
-```
+Components are the bread and butter of GameObjects. This is where all of their behavior (input, physics, collision, etc) is defined and changed.
+
+### Graphics Components
+
+Graphics components deal with rendering GameObjects. Each GraphicComponent has a field ```renderers```, which are objects comingfrom the Renderers section.
+
+```render(GameObject *obj)``` usually isn't necessary to call. Instead, create all of the renderers and add them to the ```renderers``` vector in the Component's constructor
+
+### Physics Components
+
+Physics components deal with world interactions, as well as time-related (aka physics) stuff.
+
+```update(GameObject *obj, World *world, float dt)``` is where all of your computation is uaully done.
+
+### Collision Components
+
+Collision Components handle object collision. What's important is that if you want an object to be collideable, at least add `CollisionComponent()`  to it.
+
+```collide(GameObject *obj, GameObject *other)``` is called whenever this object collides with another object. Use this for reactionary effects (setting remove to true, moving object, etc).
+
+### Component
+
+This is the most general component (Usually for input). It has a relatively simple ```update(GameObject *obj)``` call.
 
 ## Renderer
 
