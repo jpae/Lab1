@@ -30,6 +30,7 @@ const extern int w_width;
 const extern int w_height;
 extern bool keysDown[GLFW_KEY_LAST];
 extern float randFloat(float l, float h);
+extern glm::vec3 randPoint(float r);
 
 void resize_obj(std::vector<tinyobj::shape_t> &shapes);
 

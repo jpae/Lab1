@@ -6,21 +6,26 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <glm/ext.hpp>
 #include "GLSL.h"
 #include "main.h"
+#include "world.h"
 #include "component.h"
 #include "gameobject.h"
 
 const float PLAYER_SPEED = 0.25f;
 void MovementComponent::update(GameObject *obj, World *world, float dt) {
     float world_speed = obj->getSpeed() / FRAMES_PER_SEC;
-    //glm::vec3 direction = obj->getDirection();
 
-    float velocity_z = world_speed * glm::cos(1); //retrieve from direction
-    float velocity_x = world_speed * glm::sin(1); //retrieve from direction
+    // oriented angle respect to the POSITIVE Z-axis
+    obj->setZ(obj->getZ() + world_speed * obj->getDirection().z);
+    obj->setX(obj->getX() + world_speed * obj->getDirection().x);
 
-    
-    obj->setZ(obj->getZ() + world_speed);
+    //Check for floor bounds
+    if (abs(obj->getX()) > GROUND_WIDTH/2 || abs(obj->getZ()) > GROUND_WIDTH/2) {
+        glm::vec3 newDirectionPoint = randPoint(GROUND_WIDTH/3);
+        obj->setDirection(newDirectionPoint - glm::vec3(obj->getX(), 0, obj->getZ()));
+   }
 }
 
 void PlayerInputComponent::update(GameObject *obj) {

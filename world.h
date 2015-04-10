@@ -13,6 +13,8 @@
 #include <vector>
 #include "gameobject.h"
 
+#define GROUND_WIDTH 40
+
 class World {
 private:
     std::vector<GameObject *> objects;

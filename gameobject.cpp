@@ -63,8 +63,8 @@ float GameObject::getRadius() {
 glm::mat4 GameObject::getModel() {
    glm::mat4 MV = glm::mat4(1.0f);
    float angle = glm::orientedAngle(glm::vec3(0, 0, 1.0f), this->getDirection(), glm::vec3(0, 1.0f, 0));
+   MV *= glm::translate(this->getX(), this->getY(), this->getZ());
    MV *= glm::rotate(angle, glm::vec3(0, 1, 0));
-   MV *= glm::translate(x, y, z);
    return MV;
 }
 
