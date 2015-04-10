@@ -220,11 +220,11 @@ void resize_obj(std::vector<tinyobj::shape_t> &shapes){
     if (zExtent >= xExtent && zExtent >= yExtent) {
         maxExtent = zExtent;
     }
-    scaleX = 1.0 / maxExtent;
+    scaleX = 2.0 / maxExtent;
     shiftX = minX + (xExtent/ 2.0);
-    scaleY = 1.0 / maxExtent;
+    scaleY = 2.0 / maxExtent;
     shiftY = minY + (yExtent / 2.0);
-    scaleZ = 1.0/ maxExtent;
+    scaleZ = 2.0/ maxExtent;
     shiftZ = minZ + (zExtent)/2.0;
     
     //Go through all verticies shift and scale them
@@ -236,7 +236,7 @@ void resize_obj(std::vector<tinyobj::shape_t> &shapes){
             shapes[i].mesh.positions[3*v+1] = (shapes[i].mesh.positions[3*v+1] - shiftY) * scaleY;
             assert(shapes[i].mesh.positions[3*v+1] >= -1.0 - epsilon);
             assert(shapes[i].mesh.positions[3*v+1] <= 1.0 + epsilon);
-            shapes[i].mesh.positions[3*v+2] = (shapes[i].mesh.positions[3*v+2] - shiftZ) * scaleZ + 0.5;
+            shapes[i].mesh.positions[3*v+2] = (shapes[i].mesh.positions[3*v+2] - shiftZ) * scaleZ;
             assert(shapes[i].mesh.positions[3*v+2] >= -1.0 - epsilon);
             assert(shapes[i].mesh.positions[3*v+2] <= 1.0 + epsilon);
         }

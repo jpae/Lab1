@@ -19,7 +19,7 @@ float t = 0;
 World::World() {
     // Move camera
     camera_init();
-    camera_setPosition(glm::vec3(0, 0, 3));
+    camera_setPosition(glm::vec3(0, 1, 3));
     camera_lookAt(glm::vec3(0, 0, 0));
 
     objects.clear();
@@ -28,6 +28,7 @@ World::World() {
     GameObject *bunny = new GameObject(new ModelRenderer("models/bunny.obj"), 
         new MovementComponent(), new PlayerInputComponent(), new PlayerCollisionComponent());
     // bunny->setSpeed(3.0);
+    bunny->setY(1);
     bunny->type = OBJECT_PLAYER;
 
     objects.push_back(bunny);
@@ -36,11 +37,16 @@ World::World() {
     bunny = new GameObject(new ModelRenderer("models/bunny.obj"), NULL, NULL,
         new CollisionComponent());
     bunny->type = OBJECT_TARGET;
+    bunny->setY(1);
     bunny->setZ(6);
     objects.push_back(bunny);
 
     GameObject *ground = new GameObject(new GroundRenderer(10));
     objects.push_back(ground);
+}
+
+void World::addObject(GameObject *obj) {
+    objects.push_back(obj);
 }
 
 void World::collide(GameObject *obj) {
@@ -57,17 +63,26 @@ void World::update(float dt) {
     t += dt;
     if (t >= time_per_spawn) {
         // Create a new object
-        GameObject *newObject = new GameObject(new ModelRenderer("models/bunny.obj"), NULL, NULL,
-            new CollisionComponent());
+        GameObject *newObject = new GameObject(new ModelRenderer("models/bunny.obj"), 
+            new MovementComponent(), NULL, new CollisionComponent());
         newObject->type = OBJECT_TARGET;
-        std::cout << "New obj!" << std::endl;
+        newObject->setY(1);
+        newObject->setSpeed(5.0f);
+        newObject->setDirection(glm::vec3(rand(), 0, rand()));
+
+        addObject(newObject);
 
         t -= time_per_spawn;
     }
 
-    std::vector<GameObject *>::iterator iterator;
-    for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
+    std::vector<GameObject *>::iterator iterator = objects.begin();
+    while(iterator < objects.end()) {
         (*iterator)->update(this, dt);
+
+        if ((*iterator)->remove)
+            iterator = objects.erase(iterator);
+        else
+            iterator ++;
     }
 }
 

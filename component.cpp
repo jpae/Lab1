@@ -75,7 +75,7 @@ GroundRenderer::GroundRenderer(float size) {
         -size, 0,  size,
          size, 0,  size,
         -size, 0, -size,
-         size, 0,  size
+         size, 0, -size
     };
 
     const unsigned int indBuf[] = {

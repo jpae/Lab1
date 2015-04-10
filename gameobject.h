@@ -35,6 +35,8 @@ public:
    unsigned int type;
    unsigned int collidesWith;
 
+   bool remove;
+
    GameObject(GraphicsComponent  *graphics, 
               PhysicsComponent   *physics,
               Component          *input,

@@ -20,6 +20,8 @@ private:
 public:
     World();
     
+    void addObject(GameObject *obj);
+
     void collide(GameObject *obj);
     void update(float dt);
     void render();
