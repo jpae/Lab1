@@ -61,7 +61,11 @@ float GameObject::getRadius() {
 }
 
 glm::mat4 GameObject::getModel() {
-   return glm::translate(x, y, z);
+   glm::mat4 MV = glm::mat4(1.0f);
+   float angle = glm::orientedAngle(glm::vec3(0, 0, 1.0f), this->getDirection(), glm::vec3(0, 1.0f, 0));
+   MV *= glm::rotate(angle, glm::vec3(0, 1, 0));
+   MV *= glm::translate(x, y, z);
+   return MV;
 }
 
 void GameObject::collide(GameObject *other) {
@@ -115,6 +119,7 @@ void GameObject::_debug_render() {
 
       _debug_drawBounds(this->bounds);
       _debug_drawSphere(this->getRadius());
+      _debug_drawAxis();
 
       glPopMatrix();
    }

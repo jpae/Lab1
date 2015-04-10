@@ -15,5 +15,6 @@ typedef struct Bounds {
 
 void _debug_drawBounds(Bounds& bounds);
 void _debug_drawSphere(float radius);
+void _debug_drawAxis();
 
 #endif

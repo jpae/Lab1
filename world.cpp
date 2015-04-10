@@ -30,17 +30,19 @@ World::World() {
     // bunny->setSpeed(3.0);
     bunny->setY(1);
     bunny->type = OBJECT_PLAYER;
-
+    bunny->setDirection(glm::vec3(-1, 0, 1));
+    glm::vec3 dir = bunny->getDirection();
+    printf("direction: (%f, %f, %f)\n", dir.x, dir.y, dir.z);
     objects.push_back(bunny);
 
     // Bunny 2
-    bunny = new GameObject(new ModelRenderer("models/bunny.obj"), NULL, NULL,
+/*    bunny = new GameObject(new ModelRenderer("models/bunny.obj"), NULL, NULL,
         new CollisionComponent());
     bunny->type = OBJECT_TARGET;
     bunny->setY(1);
     bunny->setZ(6);
     objects.push_back(bunny);
-
+*/
     GameObject *ground = new GameObject(new GroundRenderer(10));
     objects.push_back(ground);
 }
