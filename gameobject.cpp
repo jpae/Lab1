@@ -69,8 +69,9 @@ glm::mat4 GameObject::getModel() {
 }
 
 void GameObject::collide(GameObject *other) {
-   if (!collision || !other->collision)
+   if (!collision || !other->collision) {
       return;
+   }
 
    float max_dist = getRadius() + other->getRadius();
    float dx = x - other->x;
@@ -89,7 +90,6 @@ void GameObject::collide(GameObject *other) {
 
          // Collided
          collision->collide(this, other);
-         other->collision->collide(other, this);
       }
    }
 }

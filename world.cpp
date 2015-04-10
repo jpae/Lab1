@@ -26,21 +26,14 @@ World::World() {
 
     objects.clear();
 
-    // Bunny 1
+/*    // Bunny 1
     GameObject *bunny = new GameObject(new ModelRenderer("models/bunny.obj"), 
         new MovementComponent(), new PlayerInputComponent(), new PlayerCollisionComponent());
     bunny->setY(1);
-    bunny->type = OBJECT_PLAYER;
-    objects.push_back(bunny);
-
-    // Bunny 2
-    bunny = new GameObject(new ModelRenderer("models/bunny.obj"), NULL, NULL,
-        new CollisionComponent());
     bunny->type = OBJECT_TARGET;
-    bunny->setY(1);
-    bunny->setZ(6);
+    bunny->collidesWith = OBJECT_TARGET;
     objects.push_back(bunny);
-
+*/
     GameObject *ground = new GameObject(new GroundRenderer(GROUND_WIDTH/2));
     objects.push_back(ground);
 }
@@ -52,8 +45,9 @@ void World::addObject(GameObject *obj) {
 void World::collide(GameObject *obj) {
     std::vector<GameObject *>::iterator iterator;
     for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
-        if (*iterator != obj && (*iterator)->collidesWith & obj->type)
+        if (*iterator != obj && (*iterator)->collidesWith & obj->type) {
             (*iterator)->collide(obj);
+        }
     }
 }
 
@@ -64,10 +58,11 @@ void World::update(float dt) {
     if (t >= time_per_spawn) {
         // Create a new object
         GameObject *newObject = new GameObject(new ModelRenderer("models/bunny.obj"), 
-            new MovementComponent(), NULL, new CollisionComponent());
+            new MovementComponent(), NULL, new PlayerCollisionComponent());
         newObject->type = OBJECT_TARGET;
+        newObject->collidesWith = OBJECT_TARGET;
         newObject->setY(1);
-        newObject->setSpeed(5.0f);
+        newObject->setSpeed(randFloat(5.0f, 10.0f));
         newObject->setDirection(glm::vec3(randFloat(-1.0, 1.0), 0, randFloat(-1.0, 1.0)));
 
         addObject(newObject);
@@ -77,7 +72,7 @@ void World::update(float dt) {
     std::vector<GameObject *>::iterator iterator = objects.begin();
     while(iterator < objects.end()) {
         (*iterator)->update(this, dt);
-
+        this->collide(*iterator);
         if ((*iterator)->remove)
             iterator = objects.erase(iterator);
         else

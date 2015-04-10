@@ -14,20 +14,23 @@
 #include "gameobject.h"
 
 const float PLAYER_SPEED = 0.25f;
+
+/* Movement Component */
 void MovementComponent::update(GameObject *obj, World *world, float dt) {
     float world_speed = obj->getSpeed() / FRAMES_PER_SEC;
 
-    // oriented angle respect to the POSITIVE Z-axis
     obj->setZ(obj->getZ() + world_speed * obj->getDirection().z);
     obj->setX(obj->getX() + world_speed * obj->getDirection().x);
 
-    //Check for floor bounds
+    //Check for the edge of the platforms
     if (abs(obj->getX()) > GROUND_WIDTH/2 || abs(obj->getZ()) > GROUND_WIDTH/2) {
+        //Find a new direction for the object
         glm::vec3 newDirectionPoint = randPoint(GROUND_WIDTH/3);
         obj->setDirection(newDirectionPoint - glm::vec3(obj->getX(), 0, obj->getZ()));
    }
 }
 
+/* Player Input Component */
 void PlayerInputComponent::update(GameObject *obj) {
     if (keysDown[GLFW_KEY_J]) {
         obj->setX(obj->getX() - PLAYER_SPEED); 
@@ -45,7 +48,9 @@ void PlayerInputComponent::update(GameObject *obj) {
 
 /* Collision components */
 void PlayerCollisionComponent::collide(GameObject *obj, GameObject *other) {
-    std::cout << "ow!" << std::endl;
+    glm::vec3 temp = other->getDirection();
+    other->setDirection(obj->getDirection());
+    obj->setDirection(temp);
 }
 
 /* Graphics Renderers */
