@@ -19,15 +19,15 @@ const float PLAYER_SPEED = 0.25f;
 void MovementComponent::update(GameObject *obj, World *world, float dt) {
     float world_speed = obj->getSpeed() / FRAMES_PER_SEC;
 
-    obj->setZ(obj->getZ() + world_speed * obj->getDirection().z);
-    obj->setX(obj->getX() + world_speed * obj->getDirection().x);
-
     //Check for the edge of the platforms
-    if (abs(obj->getX()) > GROUND_WIDTH/2 || abs(obj->getZ()) > GROUND_WIDTH/2) {
+    if (fabs(obj->getX()) > GROUND_WIDTH/2 || fabs(obj->getZ()) > GROUND_WIDTH/2) {
         //Find a new direction for the object
         glm::vec3 newDirectionPoint = randPoint(GROUND_WIDTH/3);
         obj->setDirection(newDirectionPoint - glm::vec3(obj->getX(), 0, obj->getZ()));
-   }
+    }
+
+    obj->setZ(obj->getZ() + world_speed * obj->getDirection().z);
+    obj->setX(obj->getX() + world_speed * obj->getDirection().x);
 }
 
 /* Player Input Component */
@@ -48,9 +48,10 @@ void PlayerInputComponent::update(GameObject *obj) {
 
 /* Collision components */
 void PlayerCollisionComponent::collide(GameObject *obj, GameObject *other) {
-    glm::vec3 temp = other->getDirection();
-    other->setDirection(obj->getDirection());
-    obj->setDirection(temp);
+    float dx = obj->getX() - other->getX();
+    float dz = obj->getZ() - other->getZ();
+
+    obj->setDirection(glm::vec3(dx, 0, dz));
 }
 
 /* Graphics Renderers */
