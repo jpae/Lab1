@@ -26,6 +26,15 @@ World::World() {
 
    objects.clear();
 
+   GameObject *player = new GameObject(new ModelRenderer("models/car.obj"), 
+    new MovementComponent(), NULL, new PlayerCollisionComponent());
+   player->type = OBJECT_PLAYER;
+   player->collidesWith = OBJECT_TARGET;
+   player->setY(1);
+   player->setDirection(glm::vec3(camera_getLookAt()));
+   objects.push_back(player);
+
+
    GameObject *ground = new GameObject(new GroundRenderer(GROUND_WIDTH/2));
    objects.push_back(ground);
 }
