@@ -21,7 +21,7 @@ float t = 0;
 World::World() {
    // Move camera
    camera_init();
-   camera_setPosition(glm::vec3(0, 20, 10));
+   camera_setPosition(glm::vec3(0, 2, 0));
    camera_lookAt(glm::vec3(0, 0, 0));
 
    objects.clear();
@@ -72,6 +72,15 @@ void World::update(float dt) {
    }
    
    std::vector<GameObject *>::iterator iterator = objects.begin();
+
+//update player position and direction
+   (*iterator)->setDirection(glm::vec3(camera_getLookAt()));
+//   std::cout << camera_getLookAt() << std::endl;
+   (*iterator)->setX(camera_getPosition().x);
+   (*iterator)->setZ(camera_getPosition().z);
+
+
+
    while(iterator < objects.end()) {
       (*iterator)->update(this, dt);
       this->collide(*iterator);
