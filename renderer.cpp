@@ -290,7 +290,6 @@ void renderText(const char *text, float x, float y) {
       char character = text[i];
       float uv_x = (character%16)/16.0f;
       float uv_y = (character/16)/16.0f;
-      std::cout << uv_y << "|" << uv_y + 1.0f/16.0f << std::endl;
 
       glm::vec2 uv_up_left    = glm::vec2( uv_x           , 1.0f - uv_y );
       glm::vec2 uv_up_right   = glm::vec2( uv_x+1.0f/16.0f, 1.0f - uv_y );

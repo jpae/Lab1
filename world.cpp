@@ -19,7 +19,7 @@ const float time_per_spawn = 1.0f;
 float t = 0;
 
 
-World::World() {
+World::World() : points(0) {
    // Move camera
    camera_init();
    camera_setPosition(glm::vec3(0, 20, 10));
@@ -91,5 +91,7 @@ void World::render() {
    }
    #endif
 
-   renderText("Hello World", 50, 50);
+   char score[16];
+   sprintf(score, "Score: %d", points);
+   renderText(score, 50, 700);
 }
