@@ -55,6 +55,7 @@ void World::collide(GameObject *obj) {
    }
 }
 
+float updateTime;
 void World::update(float dt) {
    camera_update();
 
@@ -87,6 +88,8 @@ void World::update(float dt) {
       else
          iterator ++;
    }
+
+   updateTime = dt;
 }
 
 void World::render() {
@@ -109,4 +112,7 @@ void World::render() {
    char score[16];
    sprintf(score, "Score: %d out of %d", player->score, target_number);
    renderText(score, 50, 700);
+
+   sprintf(score, "FPS: %f", 1.0f / updateTime);
+   renderText(score, 50, 650);
 }
