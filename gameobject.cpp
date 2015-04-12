@@ -13,28 +13,32 @@
 /* Constructors (ew) */
 GameObject::GameObject(GraphicsComponent *g) 
    : x(0), y(0), z(0), speed(0), graphics(g), physics(NULL), input(NULL), 
-   collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0), remove(false) {
+   collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0), remove(false),
+   direction(glm::vec3(0, 0, 0)) {
    children.clear();
 
    g->setBounds(this);
 }
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p)
    : x(0), y(0), z(0), speed(0), latSpeed(0), graphics(g), physics(p), input(NULL), 
-   collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0), remove(false) {
+   collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0), remove(false),
+   direction(glm::vec3(0, 0, 0)) {
    children.clear();
 
    g->setBounds(this);
 }
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p, Component *i) 
    : x(0), y(0), z(0), speed(0), latSpeed(0), graphics(g), physics(p), input(i), 
-   collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0), remove(false) {
+   collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0), remove(false),
+   direction(glm::vec3(0, 0, 0)) {
    children.clear();
 
    g->setBounds(this);
 }
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p, Component *i,
    CollisionComponent *c) : x(0), y(0), z(0), latSpeed(0), speed(0), graphics(g), physics(p), 
-   input(i), type(OBJECT_OBSTACLE), collidesWith(0), collision(c), remove(false) {
+   input(i), type(OBJECT_OBSTACLE), collidesWith(0), collision(c), remove(false),
+   direction(glm::vec3(0, 0, 0)) {
    children.clear();
 
    g->setBounds(this);
@@ -62,9 +66,15 @@ float GameObject::getRadius() {
 
 glm::mat4 GameObject::getModel() {
    glm::mat4 MV = glm::mat4(1.0f);
-   float angle = glm::orientedAngle(glm::vec3(0, 0, 1.0f), this->getDirection(), glm::vec3(0, 1.0f, 0));
+   float angle = MATH_PI / 2;
+   if (direction.z != 0) {
+      angle = atan(direction.x / direction.z);
+      if (direction.z <= 0)
+         angle += MATH_PI;
+   }
+
    MV *= glm::translate(this->getX(), this->getY(), this->getZ());
-   MV *= glm::rotate(angle, glm::vec3(0, 1, 0));
+   MV *= glm::rotate(angle * RADIANS_TO_DEG, glm::vec3(0, 1, 0));
    return MV;
 }
 
