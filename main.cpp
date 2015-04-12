@@ -39,6 +39,36 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action, int mod
         keysDown[key] = 0;
 }
 
+/*
+ * Generates a pseudo random float
+ *
+ * float l : lower bound
+ * float h : upper bound
+ */
+float randFloat(float l, float h) {
+   float r = rand() / (float)RAND_MAX;
+      return (1.0f - r) * l + r * h;
+}
+
+/*
+ * Generates a random vec3 within a circle along the XZ plane 
+ *
+ * float r - radius of the circle
+ */
+glm::vec3 randPoint(float r) {
+   float randA = randFloat(0, 1);
+   float randB = randFloat(0, 1);
+
+   if (randB < randA) {
+      float temp = randA;
+      randA = randB;
+      randB = temp;
+   }
+
+   float angle = M_PI * 2 * randA / randB;
+   return glm::vec3(randB * r * cos(angle), 0, randB * r * sin(angle));
+}
+
 int main(int argc, char **argv) {
     // Initialise GLFW
     if(!glfwInit()) {
