@@ -12,6 +12,7 @@
 #include <string>
 #include "world.h"
 #include "camera.h"
+#include "renderer.h"
 #include "main.h"
 
 const float time_per_spawn = 1.0f;
@@ -89,4 +90,6 @@ void World::render() {
       (*iterator)->_debug_render();
    }
    #endif
+
+   renderText("Hello World", 50, 50);
 }

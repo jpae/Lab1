@@ -18,6 +18,7 @@ const Material MATERIAL_RED_METAL = 3;
 const Material MATERIAL_CHAIR = 4;
 
 void shaders_init();
+void renderText(const char *text, float x, float y);
 
 unsigned int LoadShaders(const char *vertFilePath, const char *geomFilePath, const char *fragFilePath);
 
@@ -33,6 +34,7 @@ typedef struct Program {
 } Program;
 
 extern Program *Program3D;
+extern Program *ProgramText;
 
 // Renderers
 
@@ -62,6 +64,14 @@ public:
     
     Material mat;
     glm::vec3 bend;
+};
+
+class TexRenderer : public Renderer {
+public:
+    TexRenderer() : Renderer(2) {};
+    unsigned int texID;
+    
+    void loadTexture(char *filename);
 };
 
 #endif
