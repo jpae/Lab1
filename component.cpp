@@ -47,11 +47,19 @@ void PlayerInputComponent::update(GameObject *obj) {
 }
 
 /* Collision components */
-void PlayerCollisionComponent::collide(GameObject *obj, GameObject *other) {
+void TargetCollisionComponent::collide(GameObject *obj, GameObject *other) {
     float dx = obj->getX() - other->getX();
     float dz = obj->getZ() - other->getZ();
 
     obj->setDirection(glm::vec3(dx, 0, dz));
+}
+
+void PlayerCollisionComponent::collide(GameObject *obj, GameObject *other) {
+    other->setCollision(NULL);
+    other->setPhysics(NULL);
+    other->getGraphics()->getRenderer(0)->mat = MATERIAL_GRASS;
+
+    score ++;
 }
 
 /* Graphics Renderers */

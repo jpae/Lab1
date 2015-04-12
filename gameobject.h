@@ -56,12 +56,20 @@ public:
    float getRadius();
    float getSpeed() { return speed; }
    glm::vec3 getDirection() { return direction; } 
+   GraphicsComponent  *getGraphics()  { return graphics; }
+   PhysicsComponent   *getPhysics()   { return physics; }
+   Component          *getInput()     { return input; }
+   CollisionComponent *getCollision() { return collision; }
 
    void setX(float _x) { x = _x; }
    void setY(float _y) { y = _y; }
    void setZ(float _z) { z = _z; }
    void setSpeed(float _s) { speed = _s; }
    void setDirection(glm::vec3 _d) { direction = glm::normalize(_d); }
+   void setGraphics (GraphicsComponent *g)  { graphics  = g; }
+   void setPhysics  (PhysicsComponent *p)   { physics   = p; }
+   void setInput    (Component *i)          { input     = i; }
+   void setCollision(CollisionComponent *c) { collision = c; }
 
    void collide(GameObject *other);
    void update(World *world, float dt);

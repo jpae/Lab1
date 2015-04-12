@@ -18,9 +18,7 @@
 class World {
 private:
    std::vector<GameObject *> objects;
-   GameObject *player;
-
-   int points;
+   PlayerCollisionComponent *player;
 
 public:
    World();

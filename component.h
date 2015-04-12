@@ -22,6 +22,7 @@ protected:
 public:
     GraphicsComponent();
 
+    Renderer *getRenderer(int i) { return renderers[i]; }
     virtual void render(GameObject *obj);
     virtual void setBounds(GameObject *obj);
 };
@@ -58,6 +59,14 @@ public:
 };
 
 class PlayerCollisionComponent : public CollisionComponent {
+public:
+    PlayerCollisionComponent() : score(0) {};
+
+    int score;
+    void collide(GameObject *obj, GameObject *other);
+};
+
+class TargetCollisionComponent : public CollisionComponent {
 public:
     void collide(GameObject *obj, GameObject *other);
 };

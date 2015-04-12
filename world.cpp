@@ -19,7 +19,7 @@ const float time_per_spawn = 1.0f;
 float t = 0;
 
 
-World::World() : points(0) {
+World::World() {
    // Move camera
    camera_init();
    camera_setPosition(glm::vec3(0, 2, 0));
@@ -27,14 +27,14 @@ World::World() : points(0) {
 
    objects.clear();
 
-   GameObject *player = new GameObject(new ModelRenderer("models/car.obj"), 
-    new MovementComponent(), NULL, new PlayerCollisionComponent());
-   player->type = OBJECT_PLAYER;
-   player->collidesWith = OBJECT_TARGET;
-   player->setY(1);
-   player->setDirection(glm::vec3(camera_getLookAt()));
-   objects.push_back(player);
-
+   player = new PlayerCollisionComponent();
+   GameObject *p = new GameObject(new ModelRenderer("models/car.obj"), 
+    new MovementComponent(), NULL, player);
+   p->type = OBJECT_PLAYER;
+   p->collidesWith = OBJECT_TARGET;
+   p->setY(1);
+   p->setDirection(glm::vec3(camera_getLookAt()));
+   objects.push_back(p);
 
    GameObject *ground = new GameObject(new GroundRenderer(GROUND_WIDTH/2));
    objects.push_back(ground);
@@ -47,7 +47,7 @@ void World::addObject(GameObject *obj) {
 void World::collide(GameObject *obj) {
    std::vector<GameObject *>::iterator iterator;
    for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
-      if (*iterator != obj && (*iterator)->collidesWith & obj->type) {
+      if (*iterator != obj && obj->collidesWith & (*iterator)->type) {
          obj->collide(*iterator);
       }
    }
@@ -60,7 +60,7 @@ void World::update(float dt) {
    if (t >= time_per_spawn) {
       // Create a new object
       GameObject *newObject = new GameObject(new ModelRenderer("models/bunny.obj"), 
-         new MovementComponent(), NULL, new PlayerCollisionComponent());
+         new MovementComponent(), NULL, new TargetCollisionComponent());
       newObject->type = OBJECT_TARGET;
       newObject->collidesWith = OBJECT_TARGET;
       newObject->setY(1);
@@ -110,6 +110,6 @@ void World::render() {
    #endif
 
    char score[16];
-   sprintf(score, "Score: %d", points);
+   sprintf(score, "Score: %d", player->score);
    renderText(score, 50, 700);
 }
