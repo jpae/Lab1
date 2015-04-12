@@ -26,6 +26,7 @@ World::World() {
    camera_lookAt(glm::vec3(10, 2, 0));
 
    objects.clear();
+   target_number = 0;
 
    player = new PlayerCollisionComponent();
    GameObject *p = new GameObject(new ModelRenderer("models/car.obj"), 
@@ -42,6 +43,7 @@ World::World() {
 
 void World::addObject(GameObject *obj) {
    objects.push_back(obj);
+   target_number++;
 }
 
 void World::collide(GameObject *obj) {
@@ -57,13 +59,15 @@ void World::update(float dt) {
    camera_update();
 
    t += dt;
-   if (t >= time_per_spawn) {
+   if (t >= time_per_spawn && target_number < MAX_TARGET) {
       // Create a new object
       GameObject *newObject = new GameObject(new ModelRenderer("models/bunny.obj"), 
          new MovementComponent(), NULL, new TargetCollisionComponent());
       newObject->type = OBJECT_TARGET;
       newObject->collidesWith = OBJECT_TARGET;
       newObject->setY(1);
+      newObject->setX(randPoint(GROUND_WIDTH/3).x);
+      newObject->setZ(randPoint(GROUND_WIDTH/3).z);
       newObject->setSpeed(randFloat(5.0f, 10.0f));
       newObject->setDirection(glm::vec3(randFloat(-1.0, 1.0), 0, randFloat(-1.0, 1.0)));
 
@@ -101,6 +105,6 @@ void World::render() {
    #endif
 
    char score[16];
-   sprintf(score, "Score: %d", player->score);
+   sprintf(score, "Score: %d out of %d", player->score, target_number);
    renderText(score, 50, 700);
 }

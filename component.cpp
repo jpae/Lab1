@@ -30,9 +30,10 @@ void MovementComponent::update(GameObject *obj, World *world, float dt) {
 
     obj->setZ(obj->getZ() + world_speed * obj->getDirection().z);
     obj->setX(obj->getX() + world_speed * obj->getDirection().x);
-
-    obj->setZ(obj->getZ() + lat_speed * obj->getDirection().x);
-    obj->setX(obj->getX() + lat_speed * obj->getDirection().z);
+   
+    glm::vec3 crossed = glm::cross(obj->getDirection(), glm::vec3(0, 1, 0));
+    obj->setZ(obj->getZ() + lat_speed * crossed.z);
+    obj->setX(obj->getX() + lat_speed * crossed.x);
 }
 
 void PlayerMovementComponent::update(GameObject *obj, World *world, float dt) {
