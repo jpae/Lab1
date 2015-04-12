@@ -61,14 +61,16 @@ void World::update(float dt) {
    t += dt;
    if (t >= time_per_spawn && target_number < MAX_TARGET) {
       // Create a new object
-      GameObject *newObject = new GameObject(new ModelRenderer("models/bunny.obj"), 
-         new MovementComponent(), NULL, new TargetCollisionComponent());
+      GameObject *newObject = new GameObject(new ModelRenderer("models/disk_g.obj"), 
+         new MovementComponent(), new WheelInputComponent(), new TargetCollisionComponent());
+      newObject->getGraphics()->getRenderer(0)->mat = MATERIAL_RUBBER;
       newObject->type = OBJECT_TARGET;
       newObject->collidesWith = OBJECT_TARGET;
       newObject->setY(1);
       newObject->setX(randPoint(GROUND_WIDTH/3).x);
       newObject->setZ(randPoint(GROUND_WIDTH/3).z);
       newObject->setSpeed(randFloat(5.0f, 10.0f));
+      newObject->rotation.y = 90;
       newObject->setDirection(glm::vec3(randFloat(-1.0, 1.0), 0, randFloat(-1.0, 1.0)));
 
       addObject(newObject);

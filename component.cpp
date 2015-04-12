@@ -42,6 +42,10 @@ void PlayerMovementComponent::update(GameObject *obj, World *world, float dt) {
     camera_setPosition(glm::vec3(obj->getX(), obj->getY() + 1, obj->getZ()));
 }
 
+void WheelInputComponent::update(GameObject *obj) {
+    obj->rotation.z += obj->getSpeed() / 5;
+}
+
 /* Player Input Component */
 void PlayerInputComponent::update(GameObject *obj) {
     obj->setDirection(camera_getLookAt());
@@ -78,6 +82,7 @@ void TargetCollisionComponent::collide(GameObject *obj, GameObject *other) {
 void PlayerCollisionComponent::collide(GameObject *obj, GameObject *other) {
     other->setCollision(NULL);
     other->setPhysics(NULL);
+    other->setInput(NULL);
     other->getGraphics()->getRenderer(0)->mat = MATERIAL_GRASS;
 
     score ++;
