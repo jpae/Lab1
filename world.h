@@ -17,16 +17,19 @@
 
 class World {
 private:
-    std::vector<GameObject *> objects;
-    
-public:
-    World();
-    
-    void addObject(GameObject *obj);
+   std::vector<GameObject *> objects;
+   GameObject *player;
 
-    void collide(GameObject *obj);
-    void update(float dt);
-    void render();
+   int points;
+
+public:
+   World();
+    
+   void addObject(GameObject *obj);
+
+   void collide(GameObject *obj);
+   void update(float dt);
+   void render();
 };
 
 #endif /* defined(__FinalProject__world__) */

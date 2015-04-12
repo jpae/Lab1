@@ -160,15 +160,6 @@ int main(int argc, char **argv) {
         glUseProgram(0);
 
         glLoadIdentity(); // Reset current matrix (Modelview)
-        // glBegin(GL_LINES);
-        //     glColor3f(1, 0, 0);
-        //     glVertex3f( 0.0f,  1.0f, -5.0f);             // Top
-        //     glVertex3f( 1.0f, -1.0f, -5.0f);             // Bottom Left
-        //     glVertex3f( 0.0f,  1.0f, -5.0f);             // Top
-        //     glVertex3f(-1.0f, -1.0f, -5.0f);             // Bottom Right
-        //     glVertex3f( 1.0f, -1.0f, -5.0f);             // Bottom Left
-        //     glVertex3f(-1.0f, -1.0f, -5.0f);             // Bottom Right
-        // glEnd();
         assert(glGetError() == GL_NO_ERROR);
         
         // Swap buffers

@@ -45,15 +45,19 @@ GLvoid LoadTexture(char* image_file, int tex_id);
 GLuint LoadShaders(const char *vertFilePath, const char *geomFilePath, const char *fragFilePath);
 
 Program *Program3D = NULL;
-Program *ProgramTex = NULL;
 GLuint Program3D_uWinScale, Program3D_uProj, Program3D_uModel, Program3D_uView;
 GLuint Program3D_uLightPos, Program3D_uAColor, Program3D_uDColor;
 GLuint Program3D_uSColor, Program3D_uShine, Program3D_uBend;
 GLuint Program3D_aPosition, Program3D_aNormal;
+Renderer *Program3Dcreate();
+void Program3DbufferData(Renderer *p, int type, long num, void *data);
+void Program3Drender(Renderer *p, glm::mat4 Model);
 
-GLuint ProgramTex_uTexUnit, ProgramTex_uProj, ProgramTex_uModel;
-GLuint ProgramTex_uView, ProgramTex_aTexCoord, ProgramTex_aNormal;
-GLuint ProgramTex_aPosition, ProgramTex_uWinScale;
+Program *ProgramText = NULL;
+GLuint ProgramText_uTexUnit, ProgramText_aPosition, ProgramText_aTexCoord;
+Renderer *ProgramTextcreate();
+void ProgramTextbufferData(Renderer *p, int type, long num, void *data);
+void ProgramTextrender(Renderer *p, glm::mat4 Model);
 
 GLuint *createBuffers(int num) {
     GLuint *buffers = (GLuint *) malloc(sizeof(GLuint) * num);
@@ -138,7 +142,52 @@ void setUniforms(GLuint uWinScale, GLuint uPerspective, GLuint uView, GLuint uMo
     glUniformMatrix4fv(uPerspective, 1, GL_FALSE, &Projection[0][0]);
 }
 
-// Renderer functions
+void shaders_init() {
+    Projection = glm::perspective(45.0f, (float) w_width / w_height, 0.01f, 400.0f);
+    currentMVP = glm::mat4(1.0f);
+    MatrixStack.empty();
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadMatrixf(&Projection[0][0]);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+        
+    // ----------------- 3D MODEL SHADER -------------------------
+    Program3D = (Program *) malloc(sizeof(Program));
+    
+    Program3D->programID = LoadShaders("./shaders/3DVertex.glsl", "", "./shaders/3DFragment.glsl");
+    Program3D_uWinScale = glGetUniformLocation(Program3D->programID, "windowScale");
+    Program3D_uProj = glGetUniformLocation(Program3D->programID, "uProjMatrix");
+    Program3D_uModel = glGetUniformLocation(Program3D->programID, "uModelMatrix");
+    Program3D_uView = glGetUniformLocation(Program3D->programID, "uViewMatrix");
+    Program3D_uAColor = glGetUniformLocation(Program3D->programID, "UaColor");
+    Program3D_uDColor = glGetUniformLocation(Program3D->programID, "UdColor");
+    Program3D_uSColor = glGetUniformLocation(Program3D->programID, "UsColor");
+    Program3D_uLightPos = glGetUniformLocation(Program3D->programID, "uLightPos");
+    Program3D_uShine = glGetUniformLocation(Program3D->programID, "uShine");
+    Program3D_uBend = glGetUniformLocation(Program3D->programID, "uBend");
+    Program3D_aNormal = glGetAttribLocation(Program3D->programID, "aNormal");
+    Program3D_aPosition = glGetAttribLocation(Program3D->programID, "aPosition");
+    
+    Program3D->create = &Program3Dcreate;
+    Program3D->bufferData = &Program3DbufferData;
+    Program3D->render = &Program3Drender;
+
+    // ---------------- TEXT SHADER ---------------------------
+    ProgramText = (Program *) malloc(sizeof(Program));
+
+    ProgramText->programID = LoadShaders("./shaders/TextVertex.glsl", "", "./shaders/TextFragment.glsl");
+    ProgramText_aPosition = glGetAttribLocation(ProgramText->programID, "aPosition");
+    ProgramText_aTexCoord = glGetAttribLocation(ProgramText->programID, "aUV");
+    ProgramText_uTexUnit = glGetAttribLocation(ProgramText->programID, "uTexUnit");
+    
+    ProgramText->create = &ProgramTextcreate;
+    ProgramText->bufferData = &ProgramTextbufferData;
+    ProgramText->render = &ProgramTextrender;
+}
+
+// ----------------- PROGRAM 3D -------------------------------
 Renderer *Program3Dcreate() {
     Renderer *prog = new Renderer(3);
     prog->program = Program3D;
@@ -211,37 +260,118 @@ void Program3Drender(Renderer *p, glm::mat4 Model) {
     glUseProgram(0);
 }
 
-void shaders_init() {
-    Projection = glm::perspective(45.0f, (float) w_width / w_height, 0.01f, 400.0f);
-    currentMVP = glm::mat4(1.0f);
-    MatrixStack.empty();
+// ----------------- PROGRAM TEXT -----------------------------
+TexRenderer *TextRenderer = NULL;
+void renderText(const char *text, float x, float y) {
+   if (TextRenderer == NULL) {
+      TextRenderer = (TexRenderer *) ProgramTextcreate();
+      TextRenderer->loadTexture("text.bmp");
+   }
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadMatrixf(&Projection[0][0]);
+   std::vector<glm::vec2> vertices;
+   std::vector<glm::vec2> UVs;
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+   int length = strlen(text);
+   int size = 32;
+   for ( unsigned int i=0 ; i<length ; i++ ){
+      glm::vec2 vertex_up_left    = glm::vec2( x+i*size     , y+size );
+      glm::vec2 vertex_up_right   = glm::vec2( x+i*size+size, y+size );
+      glm::vec2 vertex_down_right = glm::vec2( x+i*size+size, y      );
+      glm::vec2 vertex_down_left  = glm::vec2( x+i*size     , y      );
+
+      vertices.push_back(vertex_up_left   );
+      vertices.push_back(vertex_down_left );
+      vertices.push_back(vertex_up_right  );
+
+      vertices.push_back(vertex_down_right);
+      vertices.push_back(vertex_up_right);
+      vertices.push_back(vertex_down_left);
+
+      char character = text[i];
+      float uv_x = (character%16)/16.0f;
+      float uv_y = (character/16)/16.0f;
+
+      glm::vec2 uv_up_left    = glm::vec2( uv_x           , 1.0f - uv_y );
+      glm::vec2 uv_up_right   = glm::vec2( uv_x+1.0f/16.0f, 1.0f - uv_y );
+      glm::vec2 uv_down_right = glm::vec2( uv_x+1.0f/16.0f, 1.0f - (uv_y + 1.0f/16.0f) );
+      glm::vec2 uv_down_left  = glm::vec2( uv_x           , 1.0f - (uv_y + 1.0f/16.0f) );
+
+      UVs.push_back(uv_up_left   );
+      UVs.push_back(uv_down_left );
+      UVs.push_back(uv_up_right  );
+
+      UVs.push_back(uv_down_right);
+      UVs.push_back(uv_up_right);
+      UVs.push_back(uv_down_left);
+   }
+
+   ProgramTextbufferData(TextRenderer, VERTEX_BUFFER, vertices.size(), &vertices[0]);
+   ProgramTextbufferData(TextRenderer, UV_BUFFER, UVs.size(), &UVs[0]);
+   TextRenderer->setNumElements(vertices.size());
+
+   ProgramTextrender(TextRenderer, glm::mat4(1));
+}
+
+Renderer *ProgramTextcreate() {
+    TexRenderer *prog = new TexRenderer();
+    prog->program = ProgramText;
+    
+    return (Renderer *)prog;
+}
+
+void ProgramTextbufferData(Renderer *p, int type, long num, void *data) {
+    size_t scalar;
+    GLuint bufType;
+    
+    if(type == VERTEX_BUFFER) {
+        bufType = GL_ARRAY_BUFFER;
+        scalar = sizeof(glm::vec2);
         
-    // ----------------- 3D MODEL SHADER -------------------------
-    Program3D = (Program *) malloc(sizeof(Program));
+        glBindBuffer(bufType, p->getBuffer(0));
+    }
+    else if(type == UV_BUFFER) {
+        bufType = GL_ARRAY_BUFFER;
+        scalar = sizeof(glm::vec2);
+        
+        glBindBuffer(bufType, p->getBuffer(1));
+    }
+    else {
+        std::cerr << "Buffer type " << type << " not recognized" << std::endl;
+        assert(0);
+    }
     
-    Program3D->programID = LoadShaders("./shaders/3DVertex.glsl", "", "./shaders/3DFragment.glsl");
-    Program3D_uWinScale = glGetUniformLocation(Program3D->programID, "windowScale");
-    Program3D_uProj = glGetUniformLocation(Program3D->programID, "uProjMatrix");
-    Program3D_uModel = glGetUniformLocation(Program3D->programID, "uModelMatrix");
-    Program3D_uView = glGetUniformLocation(Program3D->programID, "uViewMatrix");
-    Program3D_uAColor = glGetUniformLocation(Program3D->programID, "UaColor");
-    Program3D_uDColor = glGetUniformLocation(Program3D->programID, "UdColor");
-    Program3D_uSColor = glGetUniformLocation(Program3D->programID, "UsColor");
-    Program3D_uLightPos = glGetUniformLocation(Program3D->programID, "uLightPos");
-    Program3D_uShine = glGetUniformLocation(Program3D->programID, "uShine");
-    Program3D_uBend = glGetUniformLocation(Program3D->programID, "uBend");
-    Program3D_aNormal = glGetAttribLocation(Program3D->programID, "aNormal");
-    Program3D_aPosition = glGetAttribLocation(Program3D->programID, "aPosition");
+    glBufferData(bufType, scalar * num, data, GL_STATIC_DRAW);
+}
+
+void ProgramTextrender(Renderer *p, glm::mat4 Model) {
+    glUseProgram(ProgramText->programID);
     
-    Program3D->create = &Program3Dcreate;
-    Program3D->bufferData = &Program3DbufferData;
-    Program3D->render = &Program3Drender;
+    glBindTexture(GL_TEXTURE_2D, ((TexRenderer *)p)->texID);
+    
+    // Bind attributes...
+    // XYZ Position
+    glEnableVertexAttribArray(ProgramText_aPosition);
+    glBindBuffer(GL_ARRAY_BUFFER, p->getBuffer(0));
+    glVertexAttribPointer(ProgramText_aPosition, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    
+    // integer color
+    glEnableVertexAttribArray(ProgramText_aTexCoord);
+    glBindBuffer(GL_ARRAY_BUFFER, p->getBuffer(1));
+    glVertexAttribPointer(ProgramText_aTexCoord, 2, GL_FLOAT, GL_FALSE, 0, 0);
+    
+    glDrawArrays(GL_TRIANGLES, 0, p->getNumElements());
+    
+    if(p->getNumElements() == 0)
+        std::cout << "WARNING: Rendering a sprite with 0 elements" << std::endl;
+    // Cleanup
+    glDisableVertexAttribArray(ProgramText_aPosition);
+    glDisableVertexAttribArray(ProgramText_aTexCoord);
+
+    glUseProgram(0);
+}
+
+void TexRenderer::loadTexture(char *filename) {
+    LoadTexture(filename, texID);
 }
 
 // ----------------- LOAD SHADERS -----------------------------
@@ -416,7 +546,7 @@ int ImageLoad(char *filename, Image *image) {
     }
     
     /*  seek past the rest of the bitmap header. */
-    fseek(file, 24, SEEK_CUR);
+    fseek(file, 24 + 66, SEEK_CUR);
     
     /*  read the data.  */
     image->data = (char *) malloc(size);
