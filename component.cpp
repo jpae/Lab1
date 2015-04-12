@@ -43,7 +43,7 @@ void PlayerMovementComponent::update(GameObject *obj, World *world, float dt) {
 }
 
 void WheelInputComponent::update(GameObject *obj) {
-    obj->rotation.z += obj->getSpeed() / 5;
+    obj->Model *= glm::rotate(obj->getSpeed() / 5, glm::vec3(0, 0, 1));
 }
 
 /* Player Input Component */
@@ -84,6 +84,7 @@ void PlayerCollisionComponent::collide(GameObject *obj, GameObject *other) {
     other->setPhysics(NULL);
     other->setInput(NULL);
     other->getGraphics()->getRenderer(0)->mat = MATERIAL_GRASS;
+    other->Model *= glm::scale(0.5f, 0.5f, 0.5f);
 
     score ++;
 }
