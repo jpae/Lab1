@@ -19,21 +19,21 @@ GameObject::GameObject(GraphicsComponent *g)
    g->setBounds(this);
 }
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p)
-   : x(0), y(0), z(0), speed(0), graphics(g), physics(p), input(NULL), 
+   : x(0), y(0), z(0), speed(0), latSpeed(0), graphics(g), physics(p), input(NULL), 
    collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0), remove(false) {
    children.clear();
 
    g->setBounds(this);
 }
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p, Component *i) 
-   : x(0), y(0), z(0), speed(0), graphics(g), physics(p), input(i), 
+   : x(0), y(0), z(0), speed(0), latSpeed(0), graphics(g), physics(p), input(i), 
    collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0), remove(false) {
    children.clear();
 
    g->setBounds(this);
 }
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p, Component *i,
-   CollisionComponent *c) : x(0), y(0), z(0), speed(0), graphics(g), physics(p), 
+   CollisionComponent *c) : x(0), y(0), z(0), latSpeed(0), speed(0), graphics(g), physics(p), 
    input(i), type(OBJECT_OBSTACLE), collidesWith(0), collision(c), remove(false) {
    children.clear();
 

@@ -19,7 +19,7 @@
 class GameObject {
 private:
    float x, y, z;
-   float speed;
+   float speed, latSpeed;
    glm::vec3 direction;
 
    std::vector<GameObject *> children;
@@ -55,6 +55,7 @@ public:
    float getZ() { return z; }
    float getRadius();
    float getSpeed() { return speed; }
+   float getLatSpeed() { return latSpeed; }
    glm::vec3 getDirection() { return direction; } 
    GraphicsComponent  *getGraphics()  { return graphics; }
    PhysicsComponent   *getPhysics()   { return physics; }
@@ -65,6 +66,7 @@ public:
    void setY(float _y) { y = _y; }
    void setZ(float _z) { z = _z; }
    void setSpeed(float _s) { speed = _s; }
+   void setLatSpeed(float _s) { latSpeed = _s; }
    void setDirection(glm::vec3 _d) { direction = glm::normalize(_d); }
    void setGraphics (GraphicsComponent *g)  { graphics  = g; }
    void setPhysics  (PhysicsComponent *p)   { physics   = p; }

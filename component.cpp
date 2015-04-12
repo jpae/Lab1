@@ -9,14 +9,16 @@
 #include <glm/ext.hpp>
 #include "GLSL.h"
 #include "main.h"
+#include "camera.h"
 #include "world.h"
 #include "component.h"
 #include "gameobject.h"
 
-const float PLAYER_SPEED = 0.25f;
+const float PLAYER_SPEED = 20;
 
 /* Movement Component */
 void MovementComponent::update(GameObject *obj, World *world, float dt) {
+    float lat_speed = obj->getLatSpeed() / FRAMES_PER_SEC;
     float world_speed = obj->getSpeed() / FRAMES_PER_SEC;
 
     //Check for the edge of the platforms
@@ -28,22 +30,40 @@ void MovementComponent::update(GameObject *obj, World *world, float dt) {
 
     obj->setZ(obj->getZ() + world_speed * obj->getDirection().z);
     obj->setX(obj->getX() + world_speed * obj->getDirection().x);
+
+    obj->setZ(obj->getZ() + lat_speed * obj->getDirection().x);
+    obj->setX(obj->getX() + lat_speed * obj->getDirection().z);
+}
+
+void PlayerMovementComponent::update(GameObject *obj, World *world, float dt) {
+    MovementComponent::update(obj, world, dt);
+
+    camera_setPosition(glm::vec3(obj->getX(), obj->getY() + 1, obj->getZ()));
 }
 
 /* Player Input Component */
 void PlayerInputComponent::update(GameObject *obj) {
-    if (keysDown[GLFW_KEY_J]) {
-        obj->setX(obj->getX() - PLAYER_SPEED); 
+    obj->setDirection(camera_getLookAt());
+    float speed = 0;
+    float latSpeed = 0;
+
+    if (keysDown[GLFW_KEY_A]) {
+        latSpeed -= PLAYER_SPEED;
     }
-    if (keysDown[GLFW_KEY_K]) {
-        obj->setZ(obj->getZ() + PLAYER_SPEED);
+    if (keysDown[GLFW_KEY_S]) {
+        speed -= PLAYER_SPEED;
     }
-    if (keysDown[GLFW_KEY_L]) {
-        obj->setX(obj->getX() + PLAYER_SPEED); 
+    if (keysDown[GLFW_KEY_D]) {
+        latSpeed += PLAYER_SPEED;
     }
-    if (keysDown[GLFW_KEY_I]) {
-        obj->setZ(obj->getZ() - PLAYER_SPEED);
+    if (keysDown[GLFW_KEY_W]) {
+        speed += PLAYER_SPEED;
     }
+
+    obj->setSpeed(speed);
+    obj->setLatSpeed(latSpeed);
+
+    camera_setPosition(glm::vec3(obj->getX(), obj->getY() + 2, obj->getZ()));
 }
 
 /* Collision components */

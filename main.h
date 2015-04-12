@@ -24,7 +24,7 @@
 #define FRAMES_PER_SEC 120.0f
 #define SEC_PER_FRAME 1 / FRAMES_PER_SEC
 
-#define DEBUG 1
+// #define DEBUG
 
 const extern int w_width;
 const extern int w_height;

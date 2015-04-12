@@ -40,15 +40,16 @@ public:
 /* Physics components require a reference to the world */
 class PhysicsComponent {
 public:
-    PhysicsComponent(){};
-    ~PhysicsComponent(){};
     virtual void update(GameObject *obj, World *world, float dt) {};
 };
 
 class MovementComponent : public PhysicsComponent {
 public:
-    MovementComponent(){};
-    ~MovementComponent(){};
+    virtual void update(GameObject *obj, World *world, float dt);
+};
+
+class PlayerMovementComponent : public MovementComponent {
+public:
     virtual void update(GameObject *obj, World *world, float dt);
 };
 

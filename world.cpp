@@ -29,7 +29,7 @@ World::World() {
 
    player = new PlayerCollisionComponent();
    GameObject *p = new GameObject(new ModelRenderer("models/car.obj"), 
-    new MovementComponent(), NULL, player);
+    new PlayerMovementComponent(), new PlayerInputComponent(), player);
    p->type = OBJECT_PLAYER;
    p->collidesWith = OBJECT_TARGET;
    p->setY(1);
@@ -73,15 +73,6 @@ void World::update(float dt) {
    }
    
    std::vector<GameObject *>::iterator iterator = objects.begin();
-
-//update player position and direction
-   (*iterator)->setDirection(glm::vec3(camera_getLookAt()));
-//   std::cout << camera_getLookAt() << std::endl;
-   (*iterator)->setX(camera_getPosition().x);
-   (*iterator)->setZ(camera_getPosition().z);
-
-
-
    while(iterator < objects.end()) {
       (*iterator)->update(this, dt);
       this->collide(*iterator);

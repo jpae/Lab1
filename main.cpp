@@ -131,22 +131,6 @@ int main(int argc, char **argv) {
             }
             glfwSetCursorPos(window, w_width / 2, w_height / 2);
             
-            // Update camera position
-            glm::vec3 cam_d(0, 0, 0);
-            if (keysDown[GLFW_KEY_D])
-                cam_d.x += CAMERA_MOVE;
-           if (keysDown[GLFW_KEY_A])
-                cam_d.x -= CAMERA_MOVE;
-            if (keysDown[GLFW_KEY_W])
-                cam_d.z += CAMERA_MOVE;
-            if (keysDown[GLFW_KEY_S])
-                cam_d.z -= CAMERA_MOVE;
-            if (keysDown[GLFW_KEY_E])
-                cam_d.y += CAMERA_MOVE;
-            if (keysDown[GLFW_KEY_Q])
-                cam_d.y -= CAMERA_MOVE;
-            camera_move(cam_d.x, cam_d.y, cam_d.z);
-            
             // Update and render the game
             // Use fixed time updating
             world->update(SEC_PER_FRAME);
