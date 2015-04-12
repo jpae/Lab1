@@ -14,7 +14,7 @@
 GameObject::GameObject(GraphicsComponent *g) 
    : x(0), y(0), z(0), speed(0), graphics(g), physics(NULL), input(NULL), 
    collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0), remove(false),
-   direction(glm::vec3(0, 0, 0)) {
+   direction(glm::vec3(0, 0, 0)), rotation(glm::vec3(0, 0, 0)) {
    children.clear();
 
    g->setBounds(this);
@@ -22,7 +22,7 @@ GameObject::GameObject(GraphicsComponent *g)
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p)
    : x(0), y(0), z(0), speed(0), latSpeed(0), graphics(g), physics(p), input(NULL), 
    collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0), remove(false),
-   direction(glm::vec3(0, 0, 0)) {
+   direction(glm::vec3(0, 0, 0)), rotation(glm::vec3(0, 0, 0)) {
    children.clear();
 
    g->setBounds(this);
@@ -30,7 +30,7 @@ GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p)
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p, Component *i) 
    : x(0), y(0), z(0), speed(0), latSpeed(0), graphics(g), physics(p), input(i), 
    collision(NULL), type(OBJECT_OBSTACLE), collidesWith(0), remove(false),
-   direction(glm::vec3(0, 0, 0)) {
+   direction(glm::vec3(0, 0, 0)), rotation(glm::vec3(0, 0, 0)) {
    children.clear();
 
    g->setBounds(this);
@@ -38,7 +38,7 @@ GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p, Component *i)
 GameObject::GameObject(GraphicsComponent *g, PhysicsComponent *p, Component *i,
    CollisionComponent *c) : x(0), y(0), z(0), latSpeed(0), speed(0), graphics(g), physics(p), 
    input(i), type(OBJECT_OBSTACLE), collidesWith(0), collision(c), remove(false),
-   direction(glm::vec3(0, 0, 0)) {
+   direction(glm::vec3(0, 0, 0)), rotation(glm::vec3(0, 0, 0)) {
    children.clear();
 
    g->setBounds(this);
@@ -73,9 +73,11 @@ glm::mat4 GameObject::getModel() {
          angle += MATH_PI;
    }
 
-   MV = glm::translate(this->getX(), this->getY(), this->getZ());
+   MV *= glm::translate(this->getX(), this->getY(), this->getZ());
    MV *= glm::rotate(angle * RADIANS_TO_DEG, glm::vec3(0, 1, 0));
-   MV *= Model;
+   MV *= glm::rotate(rotation.y, glm::vec3(0, 1, 0));
+   MV *= glm::rotate(rotation.x, glm::vec3(1, 0, 0));
+   MV *= glm::rotate(rotation.z, glm::vec3(0, 0, 1));
    return MV;
 }
 

@@ -10,7 +10,6 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-
 #include "world.h"
 #include "camera.h"
 #include "renderer.h"
@@ -71,7 +70,7 @@ void World::update(float dt) {
       newObject->setX(randPoint(GROUND_WIDTH/3).x);
       newObject->setZ(randPoint(GROUND_WIDTH/3).z);
       newObject->setSpeed(randFloat(5.0f, 10.0f));
-      newObject->Model *= glm::rotate(90.0f, glm::vec3(0, 1, 0));
+      newObject->rotation.y = 90;
       newObject->setDirection(glm::vec3(randFloat(-1.0, 1.0), 0, randFloat(-1.0, 1.0)));
 
       addObject(newObject);

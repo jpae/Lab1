@@ -34,7 +34,7 @@ public:
    Bounds bounds;
    unsigned int type;
    unsigned int collidesWith;
-   glm::mat4 Model;
+   glm::vec3 rotation;
 
    bool remove;
 
