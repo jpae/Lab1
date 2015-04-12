@@ -83,4 +83,9 @@ public:
     void update(GameObject *obj);
 };
 
+class WheelInputComponent : public Component {
+public:
+    void update(GameObject *obj);
+};
+
 #endif /* __Project__component__ */

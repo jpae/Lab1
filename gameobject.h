@@ -34,6 +34,7 @@ public:
    Bounds bounds;
    unsigned int type;
    unsigned int collidesWith;
+   glm::vec3 rotation;
 
    bool remove;
 
@@ -56,7 +57,8 @@ public:
    float getRadius();
    float getSpeed() { return speed; }
    float getLatSpeed() { return latSpeed; }
-   glm::vec3 getDirection() { return direction; } 
+   glm::vec3 getDirection() { return direction; }
+   // glm::vec3 getRotation() { return rotation; } 
    GraphicsComponent  *getGraphics()  { return graphics; }
    PhysicsComponent   *getPhysics()   { return physics; }
    Component          *getInput()     { return input; }
@@ -68,6 +70,7 @@ public:
    void setSpeed(float _s) { speed = _s; }
    void setLatSpeed(float _s) { latSpeed = _s; }
    void setDirection(glm::vec3 _d) { direction = glm::normalize(_d); }
+   // void setRotation(glm::vec3 _r) { rotation = glm::normalize(_r); }
    void setGraphics (GraphicsComponent *g)  { graphics  = g; }
    void setPhysics  (PhysicsComponent *p)   { physics   = p; }
    void setInput    (Component *i)          { input     = i; }
