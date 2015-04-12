@@ -134,16 +134,15 @@ int main(int argc, char **argv) {
             // Update and render the game
             // Use fixed time updating
             world->update(SEC_PER_FRAME);
+
+            // Clear the screen
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            world->render(glfwGetTime() - clock);
+
+            glLoadIdentity(); // Reset current matrix (Modelview)
             
             clock = nextTime;
         }
-
-        // Clear the screen
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        world->render();
-        glUseProgram(0);
-
-        glLoadIdentity(); // Reset current matrix (Modelview)
         assert(glGetError() == GL_NO_ERROR);
         
         // Swap buffers

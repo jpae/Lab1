@@ -56,7 +56,6 @@ void World::collide(GameObject *obj) {
    }
 }
 
-float updateTime;
 void World::update(float dt) {
    camera_update();
 
@@ -94,11 +93,11 @@ void World::update(float dt) {
       else
          iterator ++;
    }
-
-   updateTime = dt;
 }
 
-void World::render() {
+float elapsed[25] = {1};
+int pos = 0;
+void World::render(float dt) {
    std::vector<GameObject *>::iterator iterator;
    for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
       (*iterator)->render();
@@ -119,6 +118,12 @@ void World::render() {
    sprintf(score, "Score: %d out of %d", player->score, target_number);
    renderText(score, 50, 700);
 
-   sprintf(score, "FPS: %f", 1.0f / updateTime);
+   elapsed[pos++] = dt;
+   pos %= 25;
+   float tot = 0;
+   for (int i = 0; i < 25; i ++)
+      tot += elapsed[i];
+
+   sprintf(score, "FPS: %f", 25.0f / tot);
    renderText(score, 50, 650);
 }

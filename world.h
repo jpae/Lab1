@@ -29,7 +29,7 @@ public:
    int getTotalTargets() { return target_number; }
    void collide(GameObject *obj);
    void update(float dt);
-   void render();
+   void render(float dt);
 };
 
 #endif /* defined(__FinalProject__world__) */
