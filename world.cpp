@@ -18,6 +18,7 @@
 const float time_per_spawn = 1.0f;
 float t = 0;
 
+int DEBUG = 1;
 
 World::World() {
    // Move camera
@@ -59,6 +60,11 @@ float updateTime;
 void World::update(float dt) {
    camera_update();
 
+   if (keysDown[GLFW_KEY_SPACE]) {
+      keysDown[GLFW_KEY_SPACE] = 0;
+      DEBUG = !DEBUG;
+   }
+
    t += dt;
    if (t >= time_per_spawn && target_number < MAX_TARGET) {
       // Create a new object
@@ -98,16 +104,16 @@ void World::render() {
       (*iterator)->render();
    }
 
-   #ifdef DEBUG
-   glm::mat4 View = camera_getMatrix();
+   if (DEBUG == 1) {
+      glm::mat4 View = camera_getMatrix();
 
-   glMatrixMode(GL_MODELVIEW);
-   glLoadMatrixf(&View[0][0]);
+      glMatrixMode(GL_MODELVIEW);
+      glLoadMatrixf(&View[0][0]);
 
-   for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
-      (*iterator)->_debug_render();
+      for(iterator = objects.begin(); iterator < objects.end(); iterator ++) {
+         (*iterator)->_debug_render();
+      }
    }
-   #endif
 
    char score[16];
    sprintf(score, "Score: %d out of %d", player->score, target_number);
