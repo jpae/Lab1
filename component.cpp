@@ -22,10 +22,13 @@ void MovementComponent::update(GameObject *obj, World *world, float dt) {
     float world_speed = obj->getSpeed() / FRAMES_PER_SEC;
 
     //Check for the edge of the platforms
-    if (fabs(obj->getX()) > GROUND_WIDTH/2 || fabs(obj->getZ()) > GROUND_WIDTH/2) {
+    if (obj->type != OBJECT_PLAYER && (fabs(obj->getX()) > GROUND_WIDTH/2 || fabs(obj->getZ()) > GROUND_WIDTH/2)) {
         //Find a new direction for the object
         glm::vec3 newDirectionPoint = randPoint(GROUND_WIDTH/3);
         obj->setDirection(newDirectionPoint - glm::vec3(obj->getX(), 0, obj->getZ()));
+    } else if (fabs(obj->getX()) > GROUND_WIDTH/2 || fabs(obj->getZ()) > GROUND_WIDTH/2) {
+        obj->setZ(0);
+        obj->setX(0);
     }
 
     obj->setZ(obj->getZ() + world_speed * obj->getDirection().z);
