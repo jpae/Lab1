@@ -23,7 +23,7 @@ World::World() {
    // Move camera
    camera_init();
    camera_setPosition(glm::vec3(0, 2, 0));
-   camera_lookAt(glm::vec3(0, 0, 0));
+   camera_lookAt(glm::vec3(10, 2, 0));
 
    objects.clear();
 
